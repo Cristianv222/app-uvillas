@@ -263,35 +263,32 @@ Si cambias un modelo o `catalog.json` en `ml-models/`: ejecuta `npm run sync-mod
 - **Producción**: falta proxy HTTPS (nginx/Caddy), `DJANGO_DEBUG=0`, `DJANGO_ALLOWED_HOSTS` y CORS definidos, y compilar la app firmada.
 - **Catálogo**: contenido genérico, pendiente de validación agronómica.
 
-## Frontend web: landing botánica
+## Frontend web
 
-La landing vive en `frontend/` (React + TypeScript + Vite). Es independiente de
-`mobile/` y del backend: no necesita autenticación, base de datos ni modelos ML.
-Su recorrido por scroll presenta hoja, flor, cáliz y fruto con ilustraciones SVG,
-además de cuidado del cultivo y presentación de la app. El fondo animado utiliza
-`PredictiveArcCanvas` de `@designcodeio/threeui`.
+La web vive en `frontend/` (React + TypeScript + Vite, servida con nginx). Tiene dos páginas:
+
+- `/`: presentación técnica del proyecto (problema, datos, metodología, resultados reales de los
+  modelos, sistema experto, enfermedades, arquitectura, equipo y referencias). Los datos salen de
+  `frontend/src/data/project.ts` y de la base de conocimiento.
+- `/laboratorio`: análisis de una foto con el modelo del servidor y el sistema experto.
 
 ```bash
-# Solo la landing, sin arrancar servicios del backend:
-docker compose up -d --build frontend
-# Abrir http://localhost:8080
-
-# Desarrollo con recarga:
-cd frontend
-npm ci
-npm run dev
-# Validar TypeScript y generar dist/:
-npm run build
+docker compose up -d --build frontend   # http://localhost:8080
+cd frontend && npm ci && npm run dev    # desarrollo con recarga (proxy /api → :8000)
+npm test && npm run build               # pruebas del motor de reglas y compilación
 ```
 
-Para levantar todo: `docker compose up -d --build` (requiere el `.env` descrito
-arriba). Docker compila la web con Node y sirve los archivos con nginx.
-El móvil sigue requiriendo una compilación nativa; Docker no genera una app iOS/Android.
+### Instalar en Android
 
-El MCP `https://threeui.com/api/mcp` requiere autenticación; instalar el paquete npm
-no habilita el MCP. No incluir credenciales del MCP en el código del navegador.
+La web es una PWA (`public/manifest.webmanifest`, `public/sw.js`): en Chrome para Android aparece
+**Instalar app** y se abre a pantalla completa con su ícono. El laboratorio tiene botones para
+**Tomar foto** (abre la cámara trasera) y **Elegir de la galería**, y reduce la foto en el teléfono
+antes de enviarla para no superar los 5 MB.
 
-Ver [revisión y relevo del frontend](docs/FRONTEND_HANDOFF.md).
+Chrome solo permite instalarla desde HTTPS. Para una demostración, publica el puerto 8080 con un
+túnel temporal, por ejemplo `cloudflared tunnel --url http://localhost:8080`, y abre en el teléfono
+la dirección `https://….trycloudflare.com` que muestra. Sin HTTPS (por ejemplo `http://IP-de-tu-PC:8080`
+en la misma red Wi-Fi) la web funciona y la cámara también, pero no se puede instalar.
 
 ### Laboratorio web conectado
 

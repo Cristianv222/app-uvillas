@@ -1,395 +1,304 @@
-import React, { useState } from 'react';
-import UvillaObservatory from '../components/UvillaObservatory';
+import { ReasoningDemo } from '../components/ReasoningDemo';
+import { SiteFooter, SiteHeader } from '../components/SiteChrome';
+import { ORGANS, REFERENCES, RESULTS, TEAM, TOTAL_CLASSES, TOTAL_IMAGES } from '../data/project';
+import { CLIMATE_RULES, DISEASES, SYMPTOM_RULES } from '../expert/knowledgeBase';
+
+const fmt = (n: number) => n.toLocaleString('es-EC');
 
 export default function LandingPage() {
-  const [menu, setMenu] = useState(false);
-  const [observatoryMode, setObservatoryMode] = useState(0);
-  const [focusPart, setFocusPart] = useState<'caliz' | 'fruto' | 'tallo' | 'base' | null>(null);
-  const [activeHotspot, setActiveHotspot] = useState<string | null>(null);
-
-  const specimens = [
-    { name: 'Planta de uvilla (Physalis)', tag: 'Espécimen 3D completo' },
-    { name: 'Cáliz dorado en capacho', tag: 'Cáliz protector maduro' },
-    { name: 'Fruto maduro y pulpa', tag: 'Baya naranja andina' },
-    { name: 'Vórtice de esporas doradas', tag: 'Dispersión de bio-partículas' },
-  ];
-
-  const handlePrevSpecimen = () => {
-    setObservatoryMode((prev) => (prev - 1 + specimens.length) % specimens.length);
-    setFocusPart(null);
-  };
-
-  const handleNextSpecimen = () => {
-    setObservatoryMode((prev) => (prev + 1) % specimens.length);
-    setFocusPart(null);
-  };
-
-  const handleHotspotClick = (part: 'caliz' | 'fruto' | 'tallo' | 'base') => {
-    if (focusPart === part) {
-      setFocusPart(null);
-      setActiveHotspot(null);
-    } else {
-      setFocusPart(part);
-      setActiveHotspot(part);
-    }
-  };
+  const symptomRules = SYMPTOM_RULES.length;
+  const climateRules = CLIMATE_RULES.length;
 
   return (
     <>
-      <a className="skip" href="#sabores">Saltar al contenido</a>
-
-      {/* ══════════════════════════════════════════
-          HERO OBSERVATORIO SALTMERE — Uvilla 3D
-      ══════════════════════════════════════════ */}
-      <section className="saltmere-viewport" id="inicio">
-        {/* Background 3D Three.js Canvas con árbol de uvilla y partículas */}
-        <UvillaObservatory mode={observatoryMode} focusPart={focusPart} />
-
-        {/* Ambient mist and vignette overlays */}
-        <div className="saltmere-fog-overlay" aria-hidden="true" />
-        <div className="saltmere-vignette" aria-hidden="true" />
-
-        {/* ── Top Header / Saltmere Nav ── */}
-        <header className="saltmere-header">
-          <a className="brand" href="#inicio" aria-label="Uvillas – inicio">
-            <span className="brand-mark">✳</span> uvillas<span className="brand-dot">.</span>
-          </a>
-
-          <button
-            className="menu-toggle"
-            aria-expanded={menu}
-            aria-controls="navigation"
-            onClick={() => setMenu(!menu)}
-          >
-            <span className="menu-toggle-bar" />
-            <span className="menu-toggle-bar" />
-            <span className="menu-toggle-bar" />
-          </button>
-
-          <nav id="navigation" className={`saltmere-nav-pill ${menu ? 'open' : ''}`} onClick={() => setMenu(false)}>
-            <a href="#inicio" className="active">Inicio</a>
-            <a href="#sabores">Propiedades</a>
-            <a href="/laboratorio" className="nav-highlight">Laboratorio IA</a>
-          </nav>
-
-          <div className="saltmere-header-actions">
-            <button
-              className="saltmere-icon-btn"
-              title="Alternar vórtice de partículas"
-              onClick={() => setObservatoryMode((prev) => (prev === 3 ? 0 : 3))}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="5" />
-                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-              </svg>
-            </button>
-            <a href="/laboratorio" className="saltmere-cta-btn">
-              Analizar mi planta →
-            </a>
+      <SiteHeader current="inicio" />
+      <main id="contenido">
+        {/* ─────────────── Portada ─────────────── */}
+        <section className="hero">
+          <div className="hero-copy">
+            <p className="hero-kicker">Proyecto de Sistemas Expertos, UPEC 2026 B</p>
+            <h1>Diagnóstico de enfermedades de la uvilla con visión artificial y un sistema experto</h1>
+            <p className="lead">
+              Una foto de la hoja, el tallo o el fruto indica si la planta está sana. Si está enferma, un conjunto de
+              reglas basado en la bibliografía agronómica decide qué enfermedad es y con cuánta certeza.
+            </p>
+            <dl className="hero-facts">
+              <div><dt>Imágenes</dt><dd>{fmt(TOTAL_IMAGES)}</dd></div>
+              <div><dt>Clases</dt><dd>{TOTAL_CLASSES}</dd></div>
+              <div><dt>Modelos</dt><dd>3</dd></div>
+              <div><dt>Reglas</dt><dd>{3 + symptomRules + climateRules}</dd></div>
+            </dl>
+            <div className="actions">
+              <a className="btn btn-primary" href="/laboratorio">Abrir laboratorio</a>
+              <a className="btn btn-quiet" href="#resultados">Ver resultados</a>
+            </div>
           </div>
-        </header>
+          <ReasoningDemo />
+        </section>
 
-        {/* ── Main Hero Content ── */}
-        <div className="saltmere-stage">
-          {/* Columna Izquierda: Copywriting y CTAs */}
-          <div className="saltmere-copy">
-            <p className="saltmere-eyebrow">PHYSALIS PERUVIANA · OBSERVATORIO</p>
-
-            <h1 className="saltmere-title">
-              Una mirada profunda<br />
-              <span className="saltmere-title-pill">al cultivo andino.</span>
-            </h1>
-
-            <div className="saltmere-desc-box">
+        {/* ─────────────── Problema ─────────────── */}
+        <section id="problema" className="block">
+          <header className="block-head">
+            <h2>El problema</h2>
+          </header>
+          <div className="cols">
+            <div className="prose">
               <p>
-                Monitoreo fitosanitario con visión artificial. Detección temprana en hojas,
-                tallos y cálices para preservar la vitalidad de la uvilla andina.
+                Las enfermedades de la uvilla (<i>Physalis peruviana</i>) se reconocen por síntomas visibles en hojas,
+                tallos y frutos. Varias se parecen entre sí: manchas, pudriciones y micelio blanco aparecen en más de una
+                enfermedad, y un error de diagnóstico lleva a aplicar el tratamiento equivocado.
+              </p>
+              <p>
+                Un clasificador de imágenes por sí solo no basta. Necesita el criterio de un experto expresado en reglas,
+                que es lo que distingue a un sistema experto de un modelo de aprendizaje automático.
               </p>
             </div>
-
-            <div className="saltmere-cta-row">
-              <a className="saltmere-primary-btn" href="/laboratorio">
-                <span className="btn-chevron">›</span> Iniciar Observación
-              </a>
-              <a className="saltmere-ghost-btn" href="#sabores">
-                Ver propiedades ↓
-              </a>
-            </div>
-
-            <div className="saltmere-social-proof">
-              <div className="avatar-stack">
-                <span className="avatar av-1">🌿</span>
-                <span className="avatar av-2">🍂</span>
-                <span className="avatar av-3">🟠</span>
-              </div>
-              <div className="proof-text">
-                <strong>4.9</strong>
-                <span>· 19 patologías clasificadas por IA</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Área Central: Hotspots interactivos sobre la planta 3D */}
-          <div className="saltmere-hotspots-layer">
-            {/* Hotspot 1: Cáliz dorado */}
-            <div className={`saltmere-hotspot hs-caliz ${activeHotspot === 'caliz' ? 'active' : ''}`}>
-              <button
-                className="hotspot-trigger"
-                onClick={() => handleHotspotClick('caliz')}
-                aria-label="Inspeccionar cáliz"
-              >
-                <span className="hs-plus">+</span> Inspeccionar cáliz
-              </button>
-              {activeHotspot === 'caliz' && (
-                <div className="hotspot-card">
-                  <h4>Capacho dorado</h4>
-                  <p>Envoltura papirácea que protege el fruto contra plagas, radiación UV y heladas andinas.</p>
-                </div>
-              )}
-            </div>
-
-            {/* Hotspot 2: Fruto y pulpa */}
-            <div className={`saltmere-hotspot hs-fruto ${activeHotspot === 'fruto' ? 'active' : ''}`}>
-              <button
-                className="hotspot-trigger"
-                onClick={() => handleHotspotClick('fruto')}
-                aria-label="Inspeccionar fruto"
-              >
-                <span className="hs-plus">+</span> Frutos maduros
-              </button>
-              {activeHotspot === 'fruto' && (
-                <div className="hotspot-card">
-                  <h4>Baya naranja andina</h4>
-                  <p>Alto contenido de antioxidantes, provitamina A y fósforo. Pulpa jugosa agridulce.</p>
-                </div>
-              )}
-            </div>
-
-            {/* Hotspot 3: Tallo y ramas */}
-            <div className={`saltmere-hotspot hs-tallo ${activeHotspot === 'tallo' ? 'active' : ''}`}>
-              <button
-                className="hotspot-trigger"
-                onClick={() => handleHotspotClick('tallo')}
-                aria-label="Inspeccionar tallo"
-              >
-                <span className="hs-plus">+</span> Estructura vascular
-              </button>
-              {activeHotspot === 'tallo' && (
-                <div className="hotspot-card">
-                  <h4>Tallo monopódico</h4>
-                  <p>Tallos angulosos con vellosidades protectoras y entrenudos con ramificación dicotómica.</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Columna Derecha: Tarjetas flotantes de telemetría (Glassmorphism) */}
-          <div className="saltmere-telemetry">
-            {/* Card 1: Altitud y clima */}
-            <div className="telemetry-card">
-              <div className="tc-header">
-                <span>Rango Altitudinal</span>
-                <span className="tc-arrow">↗</span>
-              </div>
-              <div className="tc-wave-chart">
-                <svg viewBox="0 0 100 28" fill="none">
-                  <path
-                    d="M0 20 Q20 5 45 15 T85 10 T100 22"
-                    stroke="#e8882a"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M0 24 Q30 18 55 24 T100 25"
-                    stroke="#d4a850"
-                    strokeWidth="1.2"
-                    strokeDasharray="2 3"
-                    opacity="0.6"
-                  />
-                </svg>
-              </div>
-              <div className="tc-stat">
-                <strong>2,400</strong>
-                <small>msnm</small>
-              </div>
-              <p className="tc-sub">13°C – 18°C · Andes óptimos</p>
-            </div>
-
-            {/* Card 2: Salubridad foliar */}
-            <div className="telemetry-card">
-              <div className="tc-header">
-                <span>Salubridad foliar</span>
-                <span className="tc-arrow">↗</span>
-              </div>
-              <div className="tc-spark-chart">
-                <svg viewBox="0 0 100 24" fill="none">
-                  <path
-                    d="M0 12 Q15 6 30 14 T60 8 T85 16 T100 6"
-                    stroke="#52c41a"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                  />
-                  <circle cx="100" cy="6" r="3.5" fill="#52c41a" />
-                </svg>
-              </div>
-              <div className="tc-stat">
-                <strong>98.4</strong>
-                <small>%</small>
-              </div>
-              <p className="tc-sub">Modelo TFLite · Sin anomalías</p>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Bottom Controls Bar ── */}
-        <div className="saltmere-bottom-bar">
-          <button
-            className="saltmere-base-btn"
-            onClick={() => handleHotspotClick('base')}
-          >
-            <span className="hs-plus">+</span> Base & Sustrato
-          </button>
-
-          <div className="saltmere-specimen-pill">
-            <button
-              className="specimen-nav-arrow"
-              onClick={handlePrevSpecimen}
-              aria-label="Espécimen anterior"
-            >
-              ‹
-            </button>
-            <span className="specimen-name">{specimens[observatoryMode].name}</span>
-            <button
-              className="specimen-nav-arrow"
-              onClick={handleNextSpecimen}
-              aria-label="Siguiente espécimen"
-            >
-              ›
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <main>
-        {/* ───── Propiedades y vitrina de fotos reales ───── */}
-        <section className="possibilities section" id="sabores">
-          <div className="possibilities-head">
-            <p className="eyebrow">POTENCIAL AGRONÓMICO Y BOTÁNICO</p>
-            <h2>Pequeña por fuera.<br /><em>Inmensa en beneficios.</em></h2>
-          </div>
-
-          {/* Vitrina de fotos con datos — 3 imágenes reales del usuario */}
-          <div className="fruit-vitrine">
-            <div className="vitrine-photo vitrine-photo--caliz">
-              <img
-                src="/photos/caliz-planta.jpg"
-                alt="Cálices secos dorados de uvilla en la planta"
-              />
-              <div className="vitrine-label">
-                <span>CÁLIZ (CAPACHO)</span>
-                <p>Envoltura protectora natural. Cambia de verde a dorado pajizo cuando el fruto alcanza su punto óptimo.</p>
-              </div>
-            </div>
-            <div className="vitrine-photo vitrine-photo--fruto">
-              <img
-                src="/photos/frutos-naranja.jpg"
-                alt="Frutos naranjas de uvilla maduros apilados y cortados"
-              />
-              <div className="vitrine-label">
-                <span>FRUTO Y PULPA</span>
-                <p>Baya naranja brillante y jugosa. Pulpa aromática cargada de antioxidantes y semillas ricas en fibra.</p>
-              </div>
-            </div>
-            <div className="vitrine-photo vitrine-photo--cosecha">
-              <img
-                src="/photos/frutos-cosecha.jpg"
-                alt="Frutos y hojas de uvilla en cosecha"
-              />
-              <div className="vitrine-label">
-                <span>HOJAS Y TALLOS</span>
-                <p>Planta perenne de porte herbáceo arbustivo. Tallos angulosos con vellosidades y hojas aterciopeladas.</p>
-              </div>
-            </div>
-            <div className="vitrine-data">
-              <h3>Composición nutricional</h3>
-              <div className="nutrient-list">
-                <div className="nutrient"><span>Vit. C</span><strong>43 mg/100g</strong></div>
-                <div className="nutrient"><span>Vit. A</span><strong>648 IU</strong></div>
-                <div className="nutrient"><span>Hierro</span><strong>1.7 mg/100g</strong></div>
-                <div className="nutrient"><span>Altitud óptima</span><strong>1 800 – 2 800 msnm</strong></div>
-                <div className="nutrient"><span>Antioxidantes</span><strong>Índice alto</strong></div>
-              </div>
-            </div>
-          </div>
-
-          <div className="uses">
-            <article>
-              <div className="use-icon">◉</div>
-              <h3>Sabor de los Andes</h3>
-              <p>Rica en provitamina A, vitamina C y complejo B. Sus flavonoides y polifenoles
-                potencian el sistema inmune y regulan la glicemia.</p>
-            </article>
-            <article>
-              <div className="use-icon">◒</div>
-              <h3>Transformación y Mercado</h3>
-              <p>Alta demanda para exportación fresca en capacho, deshidratados, mermeladas gourmet,
-                destilados y salsas agridulces para gastronomía internacional.</p>
-            </article>
-            <article>
-              <div className="use-icon">✳</div>
-              <h3>Manejo Sostenible</h3>
-              <p>El monitoreo fitosanitario con IA reduce agroquímicos hasta un 40 %, protege
-                polinizadores y prolonga la vida productiva del cultivo perenne.</p>
-            </article>
+            <aside className="objective">
+              <h3>Objetivo general</h3>
+              <p>
+                Entrenar un modelo de clasificación de imágenes por órgano de la planta y complementarlo con una base de
+                conocimiento heurística que explique cada diagnóstico.
+              </p>
+            </aside>
           </div>
         </section>
 
-        {/* ───── CTA Laboratorio (Acceso directo sin registro) ───── */}
-        <section className="lab-cta-section">
-          <div className="lab-cta-inner">
-            <div className="lab-cta-copy">
-              <p className="eyebrow">LABORATORIO DE IMÁGENES · SIN REGISTRO</p>
-              <h2>Sube una foto.<br /><em>El modelo te orienta.</em></h2>
-              <p>Nuestro motor de visión artificial analiza hojas, tallos y frutos. Tres modelos
-                TFLite especializados, resultado inmediato, sin necesidad de cuenta.</p>
-              <a className="button button-large" href="/laboratorio">
-                Entrar al laboratorio →
-              </a>
-              <small>Sin registro · Sin descarga · Acceso directo desde el navegador</small>
+        {/* ─────────────── Datos ─────────────── */}
+        <section id="datos" className="block">
+          <header className="block-head">
+            <h2>Conjunto de datos</h2>
+            <p>{fmt(TOTAL_IMAGES)} fotografías de campo en {TOTAL_CLASSES} clases, organizadas por órgano y por enfermedad.</p>
+          </header>
+          <div className="share" role="img" aria-label="Hojas 78 %, frutos 15 %, tallos 6 % de las imágenes">
+            {ORGANS.map(o => (
+              <span key={o.part} className={`share-${o.part.toLowerCase()}`} style={{ flexGrow: o.images }}>
+                {o.part} {Math.round((o.images / TOTAL_IMAGES) * 100)} %
+              </span>
+            ))}
+          </div>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr><th scope="col">Órgano</th><th scope="col" className="num">Clases</th><th scope="col" className="num">Imágenes</th><th scope="col" className="num">Prueba (15 %)</th><th scope="col" className="hide-sm">Clases incluidas</th></tr>
+              </thead>
+              <tbody>
+                {ORGANS.map(o => (
+                  <tr key={o.part}>
+                    <th scope="row">{o.part}</th><td className="num">{o.classes}</td><td className="num">{fmt(o.images)}</td><td className="num">{fmt(o.test)}</td><td className="muted hide-sm">{o.list}</td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr><th scope="row">Total</th><td className="num">{TOTAL_CLASSES}</td><td className="num">{fmt(TOTAL_IMAGES)}</td><td className="num">{fmt(1100)}</td><td className="hide-sm" /></tr>
+              </tfoot>
+            </table>
+          </div>
+          <p className="note">Hojas concentra el 78 % de las imágenes. En frutos y tallos hay entre 90 y 250 imágenes por clase.</p>
+        </section>
+
+        {/* ─────────────── Metodología ─────────────── */}
+        <section id="metodologia" className="block">
+          <header className="block-head">
+            <h2>Cómo se construyó</h2>
+          </header>
+          <ol className="steps">
+            <li><h3>Organización</h3><p>Las fotografías se clasificaron por órgano y enfermedad en carpetas de Google Drive.</p></li>
+            <li><h3>Entrenamiento</h3><p>Un modelo por órgano en Teachable Machine: aprendizaje por transferencia sobre MobileNet, 85 % para entrenar y 15 % para probar.</p></li>
+            <li><h3>Configuración</h3><p>200 épocas, lote de 16 imágenes y tasa de aprendizaje de 0,001.</p></li>
+            <li><h3>Evaluación</h3><p>Precisión por clase, matriz de confusión y curvas de precisión y pérdida por época.</p></li>
+            <li><h3>Análisis bibliográfico</h3><p>Agente causal, clima favorable, síntomas por órgano y manejo de cada enfermedad.</p></li>
+            <li><h3>Base de conocimiento</h3><p>Reglas SI–ENTONCES y factores de certeza que combinan el modelo con las observaciones.</p></li>
+            <li><h3>Integración</h3><p>Los modelos se exportaron a TFLite y se sirven desde el backend, la web y la app móvil.</p></li>
+          </ol>
+        </section>
+
+        {/* ─────────────── Resultados ─────────────── */}
+        <section id="resultados" className="block">
+          <header className="block-head">
+            <h2>Resultados de los modelos</h2>
+            <p>Los tres modelos reconocen bien el órgano sano, pero no logran identificar qué enfermedad es.</p>
+          </header>
+
+          <div className="dotplot" role="img" aria-label="Exactitud por órgano: ver la tabla siguiente">
+            <div className="dotplot-axis" aria-hidden="true">
+              {[0, 25, 50, 75, 100].map(v => <span key={v} style={{ left: `${v}%` }}>{v} %</span>)}
             </div>
-            <div className="lab-cta-visual">
-              <div className="lab-phone-preview">
-                <div className="lp-screen">
-                  <img
-                    src="/photos/caliz-planta.jpg"
-                    alt="Vista previa del laboratorio analizando un fruto"
-                  />
-                  <div className="lp-reticle">
-                    <span /><span /><span /><span />
-                  </div>
-                </div>
-                <div className="lp-result">
-                  <span>MODELO · FRUTOS</span>
-                  <strong>Fruto sano · 98.4%</strong>
+            {RESULTS.map(r => (
+              <div className="dotplot-row" key={r.part}>
+                <span className="dotplot-label">{r.part}</span>
+                <div className="dotplot-track">
+                  <span className="dot dot-chance" style={{ left: `${r.chance}%` }} title={`Azar ${r.chance} %`} />
+                  <span className="dot dot-disease" style={{ left: `${r.diseases}%` }} title={`Enfermedades ${r.diseases} %`} />
+                  <span className="dot dot-global" style={{ left: `${r.global}%` }} title={`Global ${r.global} %`} />
+                  <span className="dot dot-healthy" style={{ left: `${r.healthy}%` }} title={`Clase sana ${r.healthy} %`} />
                 </div>
               </div>
+            ))}
+            <ul className="dotplot-legend">
+              <li><span className="dot dot-chance" />Acierto al azar</li>
+              <li><span className="dot dot-disease" />Acierto medio en enfermedades</li>
+              <li><span className="dot dot-global" />Exactitud global</li>
+              <li><span className="dot dot-healthy" />Acierto en la clase sana</li>
+            </ul>
+          </div>
+
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr><th scope="col">Indicador (200 épocas)</th>{RESULTS.map(r => <th scope="col" key={r.part}>{r.part}</th>)}</tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Exactitud global en prueba</th>{RESULTS.map(r => <td key={r.part}>{r.global} %</td>)}</tr>
+                <tr><th scope="row">Acierto esperado al azar</th>{RESULTS.map(r => <td key={r.part}>{String(r.chance).replace('.', ',')} %</td>)}</tr>
+                <tr><th scope="row">Acierto en la clase sana</th>{RESULTS.map(r => <td key={r.part}>{r.healthy} %</td>)}</tr>
+                <tr><th scope="row">Acierto medio en enfermedades</th>{RESULTS.map(r => <td key={r.part}>{r.diseases} %</td>)}</tr>
+                <tr><th scope="row">Exactitud de entrenamiento</th>{RESULTS.map(r => <td key={r.part}>≈ {r.train} %</td>)}</tr>
+                <tr><th scope="row">Mejor enfermedad</th>{RESULTS.map(r => <td key={r.part}>{r.best}</td>)}</tr>
+                <tr><th scope="row">Peor enfermedad</th>{RESULTS.map(r => <td key={r.part}>{r.worst}</td>)}</tr>
+                <tr><th scope="row">Confusión principal</th>{RESULTS.map(r => <td key={r.part}>{r.confusion}</td>)}</tr>
+                <tr><th scope="row">Pérdida de prueba (inicio → final)</th>{RESULTS.map(r => <td key={r.part}>{r.loss}</td>)}</tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="findings">
+            <div>
+              <h3>Sobreajuste</h3>
+              <p>La exactitud de entrenamiento supera el 80 % mientras la de prueba queda entre 24 y 50 %, y la pérdida de prueba crece desde las primeras épocas. En tallos, pasar de 100 a 200 épocas bajó la exactitud de 53 a 50 %.</p>
+            </div>
+            <div>
+              <h3>Más datos no fue mejor</h3>
+              <p>Hojas tiene más imágenes y es el peor modelo: en enfermedades acierta casi lo mismo que el azar. Apunta a problemas de etiquetado y de encuadre más que a falta de datos.</p>
+            </div>
+            <div>
+              <h3>Confianza alta no es acierto</h3>
+              <p>El modelo siempre reparte el 100 % entre sus clases. Una versión previa clasificó con 100 % una imagen que no mostraba un tallo.</p>
             </div>
           </div>
         </section>
 
+        {/* ─────────────── Sistema experto ─────────────── */}
+        <section id="sistema-experto" className="block block-dark">
+          <header className="block-head">
+            <h2>El sistema experto</h2>
+            <p>El modelo decide si el órgano está sano o enfermo, porque lo hace bien. Las reglas deciden qué enfermedad es.</p>
+          </header>
+          <ol className="flow">
+            <li><h3>Foto</h3><p>El usuario elige hoja, tallo o fruto. El modelo de ese órgano da sus tres clases más probables.</p></li>
+            <li><h3>Reglas de control</h3><p>R1 pide otra foto si la confianza es menor de 50 %. R2 acepta el órgano sano sobre 60 %. R3 pasa a las preguntas.</p></li>
+            <li><h3>Síntomas y clima</h3><p>Preguntas de Sí, No o No sé según el órgano, y la temperatura y humedad del lote si se conocen.</p></li>
+            <li><h3>Factores de certeza</h3><p>Cada evidencia suma o resta certeza. El resultado muestra qué reglas se activaron y por qué.</p></li>
+          </ol>
+          <div className="cols">
+            <div className="formula">
+              <p>Combinación de evidencias (MYCIN)</p>
+              <code>FC = FC₁ + FC₂ × (1 − FC₁)</code>
+              <span>Si una evidencia es negativa, resta certeza en lugar de sumarla. El diagnóstico es probable desde 0,60 y posible desde 0,35.</span>
+            </div>
+            <div className="table-wrap">
+              <table>
+                <thead><tr><th scope="col">Componente</th><th scope="col" className="num">Reglas</th><th scope="col">Ejemplo</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Control</th><td className="num">3</td><td>SI la confianza es menor de 50 % ENTONCES pedir otra foto.</td></tr>
+                  <tr><th scope="row">Síntomas</th><td className="num">{symptomRules}</td><td>SI hay esclerocios negros junto al micelio ENTONCES Esclerotiniosis (+0,80) y no Moho blanco (−0,40).</td></tr>
+                  <tr><th scope="row">Clima</th><td className="num">{climateRules}</td><td>SI la temperatura supera 22 °C ENTONCES Marchitez bacterial (+0,40).</td></tr>
+                  <tr><th scope="row">Modelo</th><td className="num">1</td><td>La confianza del modelo, ponderada por su fiabilidad en cada órgano.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <a className="btn btn-primary" href="/laboratorio">Probar con una foto</a>
+        </section>
+
+        {/* ─────────────── Enfermedades ─────────────── */}
+        <section id="enfermedades" className="block">
+          <header className="block-head">
+            <h2>Enfermedades consideradas</h2>
+            <p>Fuente principal: cartilla de manejo de enfermedades de uchuva de la Universidad de Nariño, elaborada en zonas productoras vecinas a Carchi.</p>
+          </header>
+          <div className="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Enfermedad</th><th scope="col">Agente causal</th><th scope="col">Tipo</th><th scope="col">Clima favorable</th><th scope="col">Rasgo visual clave</th></tr></thead>
+              <tbody>
+                {Object.values(DISEASES).map(d => (
+                  <tr key={d.code}><th scope="row">{d.name}</th><td><i>{d.agent}</i></td><td>{d.type}</td><td className="nowrap">{d.climate}</td><td>{d.keyTrait}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <ul className="caveats">
+            <li>Moho blanco no es una enfermedad sino un signo (micelio blanco) compartido con Esclerotiniosis; por eso ambas clases se confunden.</li>
+            <li>La bibliografía describe Mancha grasienta solo en el cáliz, pero el dataset tiene 679 imágenes de hoja con esa etiqueta.</li>
+            <li>Esclerotiniosis se describe en cuello, tallo y cáliz, no en hojas; en hojas su acierto fue de 5 %.</li>
+            <li>Pudrición dura no aparece con ese nombre en la bibliografía; su agente debe confirmarse.</li>
+          </ul>
+        </section>
+
+        {/* ─────────────── Arquitectura ─────────────── */}
+        <section id="arquitectura" className="block">
+          <header className="block-head">
+            <h2>Arquitectura</h2>
+            <p>Monolito modular con Clean Architecture. La web y la app móvil comparten el backend y los mismos modelos.</p>
+          </header>
+          <div className="arch">
+            <div className="arch-layer">
+              <span className="arch-name">Clientes</span>
+              <div className="arch-boxes">
+                <div><strong>Web</strong><span>React, TypeScript y Vite. Laboratorio con el sistema experto; instalable en Android.</span></div>
+                <div><strong>App móvil</strong><span>React Native con Expo. Inferencia TFLite en el teléfono, SQLite y sincronización.</span></div>
+              </div>
+            </div>
+            <div className="arch-link">HTTP / REST y WebSocket, detrás de nginx</div>
+            <div className="arch-layer">
+              <span className="arch-name">Backend</span>
+              <div className="arch-boxes">
+                <div className="wide"><strong>Django 5, DRF y Channels</strong><span>Módulos de cuentas, catálogo, fincas, diagnósticos, reconocimiento, sincronización y reportes. Autenticación JWT.</span></div>
+              </div>
+            </div>
+            <div className="arch-link">ORM, canales y archivos de modelo</div>
+            <div className="arch-layer">
+              <span className="arch-name">Datos</span>
+              <div className="arch-boxes">
+                <div><strong>PostgreSQL 16</strong><span>Usuarios, fincas, lotes y diagnósticos.</span></div>
+                <div><strong>Redis 7</strong><span>Capa de canales del WebSocket.</span></div>
+                <div><strong>3 modelos TFLite</strong><span>Hojas, tallos y frutos; entrada de 224 × 224 px.</span></div>
+              </div>
+            </div>
+          </div>
+          <p className="note">Todo se levanta con <code>docker compose up -d --build</code>. La web queda en el puerto 8080 y la API en el 8000.</p>
+        </section>
+
+        {/* ─────────────── Limitaciones ─────────────── */}
+        <section id="trabajo-futuro" className="block">
+          <header className="block-head">
+            <h2>Limitaciones y trabajo futuro</h2>
+          </header>
+          <ul className="todo">
+            <li>Entrenar con 20 a 50 épocas, donde la pérdida de prueba es menor, en lugar de 200.</li>
+            <li>Recortar las fotografías para que muestren un solo órgano y la lesión, sin fondo de campo.</li>
+            <li>Revisar con un especialista el etiquetado de Mancha grasienta y Esclerotiniosis en hojas, y redefinir la clase Moho blanco.</li>
+            <li>Aumentar frutos y tallos a 300 o más imágenes por clase y agregar Muerte descendente al modelo de tallos.</li>
+            <li>Agregar a cada modelo una clase “Otro / fondo” para rechazar fotos que no correspondan al órgano.</li>
+            <li>Validar los factores de certeza de las reglas con un ingeniero agrónomo.</li>
+          </ul>
+        </section>
+
+        {/* ─────────────── Equipo ─────────────── */}
+        <section id="equipo" className="block">
+          <header className="block-head">
+            <h2>Equipo</h2>
+            <p>Noveno nivel de la Carrera de Computación, Universidad Politécnica Estatal del Carchi. Docente: Ing. Marco Yandún.</p>
+          </header>
+          <ul className="team">
+            {TEAM.map(m => <li key={m.name}><strong>{m.name}</strong><span>{m.role}</span></li>)}
+          </ul>
+          <h3 className="refs-title">Referencias</h3>
+          <ol className="refs">
+            {REFERENCES.map(r => <li key={r.url}>{r.text} <a href={r.url}>{r.url.replace(/^https?:\/\//, '')}</a></li>)}
+          </ol>
+        </section>
       </main>
-
-      {/* ───── Footer ───── */}
-      <footer>
-        <a className="brand" href="#inicio">
-          <span className="brand-mark">✳</span> uvillas<span className="brand-dot">.</span>
-        </a>
-        <p>
-          De la hoja al fruto. Del conocimiento al cuidado del agro.<br />
-          <em>Proyecto Uvillas · Ingeniería de Software y Machine Learning</em>
-        </p>
-        <a href="/photos/CREDITS.txt" className="footer-credit">Créditos fotográficos</a>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

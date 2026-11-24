@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api';
+import { prepareImage } from '../lib/image';
 import { ExpertPanel } from './ExpertPanel';
 import { assessImage, type Diagnosis } from '../expert/engine';
 import type { Part } from '../expert/knowledgeBase';
@@ -8,7 +9,6 @@ type Prediction = { code: string; name: string; confidence: number; is_healthy: 
 type Result = { part: Part; best: Prediction; predictions: Prediction[] };
 type HistoryItem = { id: string; part: Part; label: string; detail: string; date: string };
 
-const MAX_BYTES = 5 * 1024 * 1024;
 const PART_LABEL: Record<Part, string> = { hojas: 'Hojas', tallos: 'Tallos', frutos: 'Frutos' };
 
 export function Laboratory() {
@@ -54,17 +54,21 @@ export function Laboratory() {
     }
   }
 
-  function pickFile(f: File | undefined, input: HTMLInputElement) {
+  async function pickFile(input: HTMLInputElement) {
+    const f = input.files?.[0];
+    input.value = '';
     reset();
-    setFile(null);
     setError('');
     if (!f) return;
-    if (f.size > MAX_BYTES || !['image/jpeg', 'image/png'].includes(f.type)) {
-      setError('Selecciona un JPEG o PNG de hasta 5 MB.');
-      input.value = '';
-      return;
+    try {
+      setBusy(true);
+      setFile(await prepareImage(f));
+    } catch (e) {
+      setFile(null);
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
     }
-    setFile(f);
   }
 
   const assessment = result ? assessImage(result.predictions) : null;
@@ -88,13 +92,10 @@ export function Laboratory() {
   }
 
   return (
-    <section id="laboratorio" className="lab section">
+    <section id="laboratorio" className="lab">
       <div className="lab-heading">
-        <div>
-          <p className="eyebrow">DEL CAMPO AL CONOCIMIENTO</p>
-          <h2>Tu laboratorio<br /><em>de uvillas.</em></h2>
-          <p>Analiza una fotografía y deja que el sistema experto combine el modelo con tus observaciones.</p>
-        </div>
+        <h1>Laboratorio de diagnóstico</h1>
+        <p>Analiza una fotografía. El modelo dice si el órgano está sano; si está enfermo, tus observaciones y el clima deciden qué enfermedad es.</p>
       </div>
 
       {error && <p role="alert" className="lab-error">{error}</p>}
@@ -108,17 +109,26 @@ export function Laboratory() {
               <option value="frutos">Frutos</option>
             </select>
           </label>
-          <label className="photo-upload">
+          <div className={`photo-drop ${preview ? 'has-photo' : ''}`}>
             {preview
               ? <img src={preview} alt="Fotografía seleccionada para analizar" />
-              : <span>Selecciona una fotografía<br /><small>JPEG o PNG · máximo 5 MB</small></span>}
-            <input type="file" accept="image/jpeg,image/png" disabled={busy} onChange={e => pickFile(e.target.files?.[0], e.target)} />
-          </label>
-          <button className="button" disabled={busy || !file} onClick={analyze}>{busy ? 'Procesando…' : 'Analizar fotografía'}</button>
+              : <p>Toma una foto con buena luz, enfocando una sola parte de la planta.</p>}
+            <div className="photo-actions">
+              <label className="button button-ghost">
+                Tomar foto
+                <input className="visually-hidden" type="file" accept="image/*" capture="environment" disabled={busy} onChange={e => pickFile(e.target)} />
+              </label>
+              <label className="button button-ghost">
+                Elegir de la galería
+                <input className="visually-hidden" type="file" accept="image/*" disabled={busy} onChange={e => pickFile(e.target)} />
+              </label>
+            </div>
+          </div>
+          <button className="button" disabled={busy || !file} onClick={analyze}>{busy ? 'Procesando…' : 'Analizar foto'}</button>
         </div>
 
         <div className="results" aria-live="polite">
-          <p className="eyebrow">PASO 1 · MODELO DE IMÁGENES</p>
+          <h2 className="panel-title">Resultado del modelo</h2>
           {result && assessment ? (
             <>
               <h3>{result.best.name}</h3>
@@ -140,8 +150,7 @@ export function Laboratory() {
             </>
           ) : (
             <>
-              <h3>Una imagen, una primera orientación.</h3>
-              <p>Usa buena luz y enfoca una sola parte de la planta. Aquí aparecerán las tres predicciones del modelo.</p>
+              <p className="empty">Elige la parte de la planta y una foto. Aquí aparecerán las tres clases más probables.</p>
             </>
           )}
           <small>El resultado orienta, no reemplaza la visita de un ingeniero agrónomo.</small>
@@ -158,7 +167,7 @@ export function Laboratory() {
       )}
 
       <div className="lab-history">
-        <h3>Análisis de esta sesión</h3>
+        <h2 className="panel-title">Análisis de esta sesión</h2>
         {history.length === 0
           ? <p>Aún no has guardado análisis.</p>
           : history.map(item => (

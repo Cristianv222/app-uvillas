@@ -35,8 +35,7 @@ export function ExpertPanel({ part, predictions, onDiagnosis }: {
 
   return (
     <section className="expert" aria-labelledby="expert-title">
-      <p className="eyebrow">SISTEMA EXPERTO</p>
-      <h3 id="expert-title">Cuéntanos qué observas</h3>
+      <h2 id="expert-title" className="panel-title">Sistema experto: ¿qué observas en la planta?</h2>
       <p>El modelo distingue bien un órgano sano de uno enfermo, pero confunde las enfermedades entre sí. Tus observaciones y el clima deciden cuál es.</p>
 
       <form onSubmit={run} className="expert-form">

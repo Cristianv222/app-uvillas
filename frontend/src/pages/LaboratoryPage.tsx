@@ -1,2 +1,14 @@
-import {Laboratory} from '../components/Laboratory';
-export default function LaboratoryPage(){return <><a className="skip" href="#laboratorio">Saltar al laboratorio</a><header className="lab-header"><a className="brand" href="/">✳ uvillas.</a><nav aria-label="Navegación principal"><a href="/">Inicio</a><a href="/laboratorio" aria-current="page">Laboratorio</a></nav></header><main><Laboratory/></main><footer><a href="/">Volver a la landing</a><a href="/photos/CREDITS.txt">Créditos fotográficos</a></footer></>;}
+import { Laboratory } from '../components/Laboratory';
+import { SiteFooter, SiteHeader } from '../components/SiteChrome';
+
+export default function LaboratoryPage() {
+  return (
+    <>
+      <SiteHeader current="laboratorio" />
+      <main id="contenido">
+        <Laboratory />
+      </main>
+      <SiteFooter />
+    </>
+  );
+}
