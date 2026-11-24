@@ -10,6 +10,7 @@ import { MotionSurface } from './components/MotionSurface';
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const LaboratoryPage = lazy(() => import('./pages/LaboratoryPage'));
 const DocsPage = lazy(() => import('./pages/DocsPage'));
+const RequirementsPage = lazy(() => import('./pages/RequirementsPage'));
 
 const path = location.pathname.replace(/\/$/, '') || '/';
 if (path === '/' && location.hash === '#laboratorio') location.replace('/laboratorio');
@@ -28,7 +29,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <MotionSurface>
       <Suspense fallback={<p className="route-loading">Cargando…</p>}>
-        {path === '/' ? <LandingPage /> : path === '/laboratorio' ? <LaboratoryPage /> : path === '/documentacion' ? <DocsPage /> : <NotFound />}
+        {path === '/' ? <LandingPage /> : path === '/laboratorio' ? <LaboratoryPage /> : path === '/documentacion' ? <DocsPage /> : path === '/requisitos' ? <RequirementsPage /> : <NotFound />}
       </Suspense>
     </MotionSurface>
   </StrictMode>,

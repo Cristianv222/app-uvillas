@@ -1,7 +1,7 @@
 // Service worker de Uvillas: permite instalar la web como app y abrirla sin conexión.
 // El análisis de fotos (/api/) siempre va a la red: el modelo corre en el servidor.
-const CACHE = 'uvillas-v2';
-const SHELL = ['/', '/laboratorio', '/documentacion', '/manifest.webmanifest', '/icons/icon-192.png'];
+const CACHE = 'uvillas-v3';
+const SHELL = ['/', '/laboratorio', '/documentacion', '/requisitos', '/manifest.webmanifest', '/icons/icon-192.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));

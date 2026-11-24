@@ -17,7 +17,7 @@ export function Logo() {
   );
 }
 
-export function SiteHeader({ current, tone }: { current: 'inicio' | 'laboratorio' | 'documentacion'; tone?: 'dark' }) {
+export function SiteHeader({ current, tone }: { current: 'inicio' | 'laboratorio' | 'documentacion' | 'requisitos'; tone?: 'dark' }) {
   const [open, setOpen] = useState(false);
   return (
     <header className={`site-header ${tone === 'dark' ? 'site-header--dark' : ''}`}>
@@ -40,17 +40,11 @@ export function SiteHeader({ current, tone }: { current: 'inicio' | 'laboratorio
 export function SiteFooter() {
   return (
     <footer className="site-footer">
-      <div>
-        <p className="footer-brand"><Logo /> Uvillas</p>
-        <p>Proyecto final de Sistemas Expertos. Carrera de Computación, Universidad Politécnica Estatal del Carchi, período 2026 B.</p>
-      </div>
-      <div className="footer-links">
-        <a href="https://github.com/Cristianv222/app-uvillas">Código en GitHub</a>
-        <a href="/laboratorio">Laboratorio</a>
-        <a href="/documentacion">Documentación técnica</a>
-        <a href="/photos/CREDITS.txt">Créditos de fotografías</a>
-      </div>
-      <p className="footer-note">Los diagnósticos orientan y no reemplazan la visita de un ingeniero agrónomo.</p>
+      <p className="footer-brand"><Logo /> Uvillas</p>
+      <nav className="footer-links" aria-label="Información">
+        <a href="/documentacion">Documentación</a>
+        <a href="/requisitos">Requisitos</a>
+      </nav>
     </footer>
   );
 }
