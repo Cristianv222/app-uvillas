@@ -265,12 +265,19 @@ Si cambias un modelo o `catalog.json` en `ml-models/`: ejecuta `npm run sync-mod
 
 ## Frontend web
 
-La web vive en `frontend/` (React + TypeScript + Vite, servida con nginx). Tiene dos páginas:
+La web vive en `frontend/` (React + TypeScript + Vite, servida con nginx). Tiene tres páginas:
 
-- `/`: presentación técnica del proyecto (problema, datos, metodología, resultados reales de los
-  modelos, sistema experto, enfermedades, arquitectura, equipo y referencias). Los datos salen de
+- `/`: portada 3D de la planta de uvilla (Three.js, `UvillaObservatory.tsx` y `ObservatoryHero.tsx`,
+  estilos en `portada.css`). Al elegir hoja, tallo o fruto, en los botones o en los puntos de la planta,
+  abre el laboratorio con esa parte. Sigue con cómo funciona el sistema, cómo entrega el resultado
+  (demostración interactiva con el motor real) y el equipo.
+- `/documentacion`: problema, datos, metodología, resultados de los modelos, base de conocimiento,
+  enfermedades, arquitectura (desplegable), trabajo futuro y referencias. Los datos salen de
   `frontend/src/data/project.ts` y de la base de conocimiento.
-- `/laboratorio`: análisis de una foto con el modelo del servidor y el sistema experto.
+- `/laboratorio`: análisis de una foto con el modelo del servidor y el sistema experto. Acepta
+  `?parte=hojas|tallos|frutos`.
+
+El fondo animado de todo el sitio es `PredictiveArcCanvas` de ThreeUI (`MotionSurface.tsx`).
 
 ```bash
 docker compose up -d --build frontend   # http://localhost:8080

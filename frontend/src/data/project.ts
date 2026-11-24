@@ -18,13 +18,7 @@ export const RESULTS = [
   { part: 'Tallos', global: 50, chance: 25, healthy: 84, diseases: 31, train: 95, best: 'Moho blanco (43 %)', worst: 'Pudrición dura (20 %)', confusion: 'Esclerotiniosis → Moho blanco (5)', loss: '1,0 → 2,3 (100 épocas)' },
 ] as const;
 
-export const TEAM = [
-  { name: 'Cristian Vásquez', role: 'Arquitectura y repositorio' },
-  { name: 'Edison Godoy', role: 'Backend' },
-  { name: 'Oscar Ger', role: 'Backend' },
-  { name: 'Francis Revelo', role: 'Frontend y sistema experto' },
-  { name: 'Joel Pilacuán', role: 'Frontend' },
-] as const;
+export const TEAM = ['Cristian Vásquez', 'Edison Godoy', 'Oscar Ger', 'Francis Revelo', 'Joel Pilacuán'] as const;
 
 export const REFERENCES = [
   {

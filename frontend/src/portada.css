@@ -1,0 +1,819 @@
+/* ══════════════════════════════════════════════════════════════
+   Portada 3D de Joel Pilacuán (observatorio de la uvilla en Three.js)
+   y fondo animado ThreeUI. Estilos originales, con sus variables
+   limitadas a la portada para no chocar con el resto del sitio.
+   ══════════════════════════════════════════════════════════════ */
+
+.saltmere-viewport {
+  /* Uvilla naranja maduro brillante (extraído de fotos reales) */
+  --uvilla:          #e8882a;
+  --uvilla-light:    #fddcaa;
+  --uvilla-pale:     #fff6ea;
+  --uvilla-dark:     #b85d14;
+  --uvilla-glow:     rgba(232, 136, 42, 0.35);
+
+  /* Follaje / Hoja verde andina */
+  --leaf:            #163d2b;
+  --leaf-mid:        #245839;
+  --leaf-light:      #e2ecd8;
+  --leaf-pale:       #f2f7ed;
+
+  /* Cáliz seco / Capacho dorado y tallos */
+  --soil:            #9b6b2e;
+  --soil-light:      #d4a850;
+  --stem:            #5b7e3e;
+
+  /* Neutros cálidos */
+  --paper:           #fffbf2;
+  --paper-warm:      #faf2e4;
+  --muted:           #6e8068;
+  --ink:             #163d2b;
+
+  /* Semantic */
+  --danger:          #d94f3a;
+  --warning:         #e9a81e;
+  --ok:              #3d8f56;
+
+  /* Typography */
+  --font-sans:       var(--font);
+  --font-display:    var(--font);
+  --font-serif:      Georgia, 'Times New Roman', serif;
+
+  /* Spacing */
+  --section-pad-x:   clamp(24px, 7%, 100px);
+  --section-pad-y:   clamp(60px, 10vw, 130px);
+
+  /* Radius */
+  --radius-sm:       8px;
+  --radius-md:       16px;
+  --radius-lg:       28px;
+  --radius-pill:     999px;
+
+  /* Transitions */
+  --ease-spring:     cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Marca y menú dentro de la portada */
+.saltmere-header .brand { font-size: 26px; font-weight: 800; letter-spacing: -0.05em; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+.saltmere-header .menu-toggle { display: none; flex-direction: column; gap: 5px; padding: 8px; min-height: 0; background: none; border: 0; border-radius: 6px; }
+.saltmere-header .menu-toggle-bar { display: block; width: 22px; height: 2px; border-radius: 2px; transition: all 0.25s var(--ease-spring); }
+
+/* ══════════════════════════════════════════
+   MOTION SURFACE (ThreeUI bg overlay)
+══════════════════════════════════════════ */
+.motion-surface {
+  isolation: isolate;
+  position: relative;
+  min-height: 100svh;
+}
+
+.system-atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.055;
+  mix-blend-mode: soft-light;
+}
+.system-atmosphere > div { height: 100%; width: 100%; }
+
+.page-content { position: relative; }
+
+@media (prefers-reduced-motion: reduce) { .system-atmosphere { display: none; } }
+
+/* ══════════════════════════════════════════
+   SALTMERE INTERFACE — Observatorio Botánico Uvilla
+══════════════════════════════════════════ */
+.saltmere-viewport {
+  position: relative;
+  min-height: 100svh;
+  width: 100%;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 30%, #0d1e14 0%, #07100a 60%, #040805 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.observatory-canvas-wrap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: auto;
+}
+
+.saltmere-fog-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 65% 55% at 60% 48%, transparent 20%, rgba(6, 14, 9, 0.7) 85%),
+    linear-gradient(to bottom, rgba(5, 12, 8, 0.5) 0%, transparent 25%, transparent 70%, rgba(5, 12, 8, 0.85) 100%);
+}
+
+.saltmere-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.75);
+}
+
+/* ── Top Header / Saltmere Nav ── */
+.saltmere-header {
+  position: relative;
+  z-index: 25;
+  height: 80px;
+  padding: 0 var(--section-pad-x);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.saltmere-header .brand {
+  color: #ffffff;
+  font-size: 24px;
+}
+.saltmere-header .brand-mark {
+  color: var(--uvilla);
+  filter: drop-shadow(0 0 8px rgba(232, 136, 42, 0.6));
+}
+.saltmere-header .brand-dot {
+  color: var(--uvilla);
+}
+
+.saltmere-nav-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(14, 30, 20, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-pill);
+  padding: 5px 8px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.saltmere-nav-pill a {
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+  transition: all 0.2s ease;
+}
+
+.saltmere-nav-pill a:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.saltmere-nav-pill a.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.saltmere-nav-pill .nav-highlight {
+  color: var(--uvilla-light);
+  font-weight: 600;
+}
+
+.saltmere-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.saltmere-icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(14, 30, 20, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--uvilla-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition: all 0.2s;
+}
+.saltmere-icon-btn:hover {
+  background: rgba(232, 136, 42, 0.2);
+  border-color: var(--uvilla);
+  transform: scale(1.05);
+}
+
+.saltmere-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(232, 136, 42, 0.22);
+  border: 1px solid rgba(232, 136, 42, 0.55);
+  color: #fff2d4;
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 600;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(232, 136, 42, 0.25);
+  transition: all 0.2s ease;
+}
+.saltmere-cta-btn:hover {
+  background: var(--uvilla);
+  color: #122417;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(232, 136, 42, 0.45);
+}
+
+/* ── Main Stage / Saltmere Content Grid ── */
+.saltmere-stage {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 380px 1fr 220px;
+  align-items: center;
+  gap: 24px;
+  padding: 20px var(--section-pad-x) 60px;
+  min-height: calc(100svh - 160px);
+  pointer-events: none;
+}
+
+.saltmere-copy,
+.saltmere-hotspots-layer,
+.saltmere-telemetry {
+  pointer-events: auto;
+}
+
+/* Left Copywriting */
+.saltmere-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--uvilla);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.saltmere-eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--uvilla);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--uvilla);
+}
+
+.saltmere-title {
+  font-size: clamp(38px, 4.2vw, 62px);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  margin-bottom: 24px;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+}
+
+.saltmere-title-pill {
+  display: inline-block;
+  background: rgba(28, 64, 43, 0.72);
+  border: 1px solid rgba(82, 196, 26, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(12px);
+  padding: 4px 18px 6px;
+  border-radius: 12px;
+  color: #fff6e0;
+  margin-top: 6px;
+}
+
+.saltmere-desc-box {
+  background: rgba(12, 26, 18, 0.68);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+  padding: 18px 22px;
+  max-width: 380px;
+  margin-bottom: 28px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+.saltmere-desc-box p {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0;
+}
+
+.saltmere-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.saltmere-primary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #e8882a 0%, #cf7219 100%);
+  color: #fff9ea;
+  padding: 13px 26px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 14.5px;
+  box-shadow: 0 8px 26px rgba(232, 136, 42, 0.38);
+  transition: all 0.25s var(--ease-spring);
+}
+.saltmere-primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 34px rgba(232, 136, 42, 0.55);
+}
+.saltmere-primary-btn .btn-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.saltmere-ghost-btn {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 14px;
+  transition: color 0.2s;
+}
+.saltmere-ghost-btn:hover {
+  color: #ffffff;
+}
+
+.saltmere-social-proof {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(10, 22, 15, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-pill);
+  padding: 8px 16px;
+  backdrop-filter: blur(12px);
+}
+.avatar-stack {
+  display: flex;
+  align-items: center;
+}
+.avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid #0d1a12;
+  margin-left: -6px;
+}
+.avatar:first-child {
+  margin-left: 0;
+}
+.proof-text strong {
+  font-size: 13.5px;
+  color: #fff;
+  margin-right: 4px;
+}
+.proof-text span {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ── Hotspots Layer ── */
+.saltmere-hotspots-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 12;
+}
+
+.saltmere-hotspot {
+  position: absolute;
+  pointer-events: auto;
+}
+.hs-caliz {
+  top: 30%;
+  left: 54%;
+}
+.hs-fruto {
+  top: 56%;
+  left: 42%;
+}
+.hs-tallo {
+  top: 68%;
+  left: 60%;
+}
+
+.hotspot-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(10, 24, 16, 0.85);
+  border: 1px solid rgba(232, 136, 42, 0.45);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 15px;
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+  transition: all 0.25s var(--ease-spring);
+}
+.hotspot-trigger:hover {
+  background: rgba(24, 52, 34, 0.95);
+  border-color: var(--uvilla);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(232, 136, 42, 0.35);
+}
+.saltmere-hotspot.active .hotspot-trigger {
+  background: var(--uvilla);
+  color: #122417;
+}
+.saltmere-hotspot.active .hs-plus {
+  color: #122417;
+}
+
+.hs-plus {
+  color: var(--uvilla);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.hotspot-card {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 250px;
+  background: rgba(10, 24, 16, 0.94);
+  border: 1px solid rgba(232, 136, 42, 0.4);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(16px);
+  animation: fadeIn 0.25s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, 8px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+.hotspot-card h4 {
+  font-size: 13.5px;
+  color: var(--uvilla-light);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+.hotspot-card p {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── Telemetry Cards (Right column) ── */
+.saltmere-telemetry {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+.telemetry-card {
+  width: 205px;
+  background: rgba(12, 26, 18, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 20px 22px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.3s var(--ease-spring), border-color 0.3s;
+}
+.telemetry-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(232, 136, 42, 0.4);
+}
+
+.tc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.tc-arrow {
+  font-size: 13px;
+  color: var(--uvilla);
+}
+
+.tc-wave-chart,
+.tc-spark-chart {
+  height: 28px;
+  width: 100%;
+}
+.tc-wave-chart svg,
+.tc-spark-chart svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.tc-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.tc-stat strong {
+  font-size: 29px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.tc-stat small {
+  font-size: 12.5px;
+  color: var(--uvilla-light);
+  font-weight: 600;
+}
+
+.tc-sub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.52);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ── Bottom Controls Bar ── */
+.saltmere-bottom-bar {
+  position: relative;
+  z-index: 25;
+  height: 80px;
+  padding: 0 var(--section-pad-x);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+
+.saltmere-base-btn {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(10, 24, 16, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 9px 18px;
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(14px);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.saltmere-base-btn:hover {
+  background: rgba(20, 45, 29, 0.9);
+  color: #ffffff;
+  border-color: var(--uvilla);
+}
+
+.saltmere-specimen-pill {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(12, 26, 18, 0.85);
+  border: 1px solid rgba(232, 136, 42, 0.4);
+  border-radius: var(--radius-pill);
+  padding: 8px 16px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.specimen-nav-arrow {
+  background: none;
+  border: none;
+  color: var(--uvilla);
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: transform 0.2s, color 0.2s;
+}
+.specimen-nav-arrow:hover {
+  color: var(--uvilla-light);
+  transform: scale(1.2);
+}
+
+.specimen-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+/* ── Saltmere Responsive Overrides ── */
+@media (max-width: 1024px) {
+  .saltmere-stage {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding-top: 30px;
+  }
+  .saltmere-telemetry {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 16px;
+  }
+  .hs-caliz { left: 58%; top: 26%; }
+  .hs-fruto { left: 42%; top: 48%; }
+  .hs-tallo { left: 62%; top: 62%; }
+}
+
+@media (max-width: 860px) {
+  .saltmere-header {
+    height: 70px;
+  }
+  .saltmere-header .menu-toggle {
+    display: flex;
+    z-index: 40;
+  }
+  .saltmere-header .menu-toggle-bar {
+    background: #ffffff;
+  }
+  .saltmere-nav-pill {
+    display: none;
+    position: fixed;
+    top: 74px;
+    left: 16px;
+    right: 16px;
+    background: rgba(10, 24, 16, 0.96) !important;
+    border: 1px solid rgba(232, 136, 42, 0.35) !important;
+    border-radius: 20px !important;
+    flex-direction: column;
+    padding: 16px;
+    gap: 6px;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+    z-index: 100;
+  }
+  .saltmere-nav-pill.open {
+    display: flex;
+  }
+  .saltmere-nav-pill a {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.88);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .saltmere-nav-pill a:last-child {
+    border-bottom: none;
+  }
+  .saltmere-header-actions .saltmere-cta-btn {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .saltmere-stage {
+    padding-top: 10px;
+    padding-bottom: 24px;
+    min-height: auto;
+  }
+  .saltmere-title {
+    font-size: clamp(28px, 6.5vw, 38px);
+    margin-bottom: 18px;
+  }
+  .saltmere-title-pill {
+    padding: 3px 14px 5px;
+    font-size: 0.9em;
+  }
+  .saltmere-desc-box {
+    max-width: 100%;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+  }
+  .saltmere-desc-box p {
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+  .saltmere-cta-row {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .saltmere-primary-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 13px 22px;
+    font-size: 14px;
+  }
+  .saltmere-ghost-btn {
+    width: 100%;
+    text-align: center;
+    padding: 8px 12px;
+  }
+  .saltmere-social-proof {
+    width: 100%;
+    justify-content: center;
+  }
+  .saltmere-telemetry {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    gap: 12px;
+  }
+  .telemetry-card {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 16px;
+  }
+  .tc-stat strong {
+    font-size: 22px;
+  }
+  .saltmere-bottom-bar {
+    flex-direction: column;
+    gap: 10px;
+    height: auto;
+    padding-bottom: 20px;
+  }
+  .saltmere-base-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .saltmere-specimen-pill {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .hs-caliz { left: 62%; top: 22%; }
+  .hs-fruto { left: 32%; top: 48%; }
+  .hs-tallo { left: 58%; top: 64%; }
+}
+
+@media (max-width: 480px) {
+  .saltmere-hotspots-layer {
+    display: none;
+  }
+}
+
+/* La hoja original quitaba el subrayado a todos los enlaces */
+.saltmere-viewport a { text-decoration: none; }
+
+/* Selector de órgano: lleva directo al laboratorio con la parte elegida */
+.organ-picker { margin: 4px 0 22px; position: relative; z-index: 2; }
+.organ-picker p { font-size: 13px; color: rgba(240, 248, 232, 0.9); margin-bottom: 10px; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.8); }
+.organ-picker > div { display: flex; gap: 8px; flex-wrap: wrap; }
+.organ-chip {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(232, 136, 42, 0.55);
+  background: rgba(16, 40, 27, 0.55);
+  backdrop-filter: blur(8px);
+  color: #f0f8e8; font-weight: 600; font-size: 15px;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s var(--ease-spring);
+}
+.organ-chip:hover, .organ-chip:focus-visible { background: var(--uvilla); border-color: var(--uvilla); color: #2a1503; transform: translateY(-1px); }
+
+.hotspot-action {
+  display: inline-block; margin-top: 10px; padding: 7px 14px; border-radius: var(--radius-pill);
+  background: var(--uvilla); color: #2a1503; font-weight: 700; font-size: 12px;
+}
+.hotspot-action:hover { background: #f59c3c; }
+
+.hs-hoja { top: 16%; left: 36%; }
+@media (min-width: 1025px) { .hs-tallo { top: 72%; left: 44%; } }
+@media (min-width: 769px) and (max-width: 1024px) { .hs-tallo { top: 70%; left: 46%; } }
+@media (min-width: 769px) and (max-width: 1024px) { .hs-hoja { top: 14%; left: 34%; } }
+@media (max-width: 768px) { .hs-hoja { top: 30%; left: 18%; } }

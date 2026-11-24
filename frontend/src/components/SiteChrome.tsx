@@ -1,12 +1,9 @@
 import { useState } from 'react';
 
 const LINKS = [
-  { href: '/#problema', label: 'Problema' },
-  { href: '/#datos', label: 'Datos' },
-  { href: '/#resultados', label: 'Resultados' },
-  { href: '/#sistema-experto', label: 'Sistema experto' },
-  { href: '/#arquitectura', label: 'Arquitectura' },
-  { href: '/#equipo', label: 'Equipo' },
+  { href: '/', label: 'Inicio', key: 'inicio' },
+  { href: '/#como-funciona', label: 'Cómo funciona', key: '' },
+  { href: '/documentacion', label: 'Documentación', key: 'documentacion' },
 ];
 
 export function Logo() {
@@ -20,7 +17,7 @@ export function Logo() {
   );
 }
 
-export function SiteHeader({ current }: { current: 'inicio' | 'laboratorio' }) {
+export function SiteHeader({ current }: { current: 'inicio' | 'laboratorio' | 'documentacion' }) {
   const [open, setOpen] = useState(false);
   return (
     <header className="site-header">
@@ -33,7 +30,7 @@ export function SiteHeader({ current }: { current: 'inicio' | 'laboratorio' }) {
         {open ? 'Cerrar' : 'Menú'}
       </button>
       <nav id="site-nav" className={open ? 'is-open' : ''} aria-label="Secciones">
-        {LINKS.map(l => <a key={l.href} href={l.href} onClick={() => setOpen(false)}>{l.label}</a>)}
+        {LINKS.map(l => <a key={l.href} href={l.href} aria-current={l.key === current ? 'page' : undefined} onClick={() => setOpen(false)}>{l.label}</a>)}
         <a className="nav-cta" href="/laboratorio" aria-current={current === 'laboratorio' ? 'page' : undefined}>Abrir laboratorio</a>
       </nav>
     </header>
@@ -50,6 +47,7 @@ export function SiteFooter() {
       <div className="footer-links">
         <a href="https://github.com/Cristianv222/app-uvillas">Código en GitHub</a>
         <a href="/laboratorio">Laboratorio</a>
+        <a href="/documentacion">Documentación técnica</a>
         <a href="/photos/CREDITS.txt">Créditos de fotografías</a>
       </div>
       <p className="footer-note">Los diagnósticos orientan y no reemplazan la visita de un ingeniero agrónomo.</p>

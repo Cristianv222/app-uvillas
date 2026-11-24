@@ -105,25 +105,6 @@ i { font-style: italic; }
 .site-header .nav-cta:hover { background: #10281b; color: #fff; }
 .menu-toggle { display: none; margin-left: auto; min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); font: 600 0.9375rem var(--font); color: var(--ink); }
 
-/* ─────────────── Portada ─────────────── */
-.hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  gap: clamp(32px, 5vw, 72px);
-  align-items: center;
-  padding: clamp(40px, 7vw, 96px) var(--gutter) clamp(48px, 7vw, 96px);
-  max-width: 1320px;
-  margin: 0 auto;
-}
-.hero-kicker { color: var(--uvilla-ink); font-weight: 600; margin-bottom: 18px; }
-.hero h1 { font-size: var(--step-4); font-weight: 800; letter-spacing: -0.03em; line-height: 1.04; max-width: 18ch; text-wrap: balance; }
-.lead { margin-top: 22px; font-size: var(--step-1); line-height: 1.55; color: var(--ink-soft); max-width: 56ch; }
-.hero-facts { display: flex; flex-wrap: wrap; gap: 0; margin: 30px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.hero-facts div { padding: 14px 28px 14px 0; margin-right: 28px; border-right: 1px solid var(--line); }
-.hero-facts div:last-child { border-right: 0; margin-right: 0; }
-.hero-facts dt { font-size: var(--step--1); color: var(--ink-soft); }
-.hero-facts dd { margin: 2px 0 0; font-size: var(--step-2); font-weight: 700; font-variant-numeric: tabular-nums; }
-
 /* Demostración del razonamiento: la pieza central */
 .demo {
   margin: 0;
@@ -269,10 +250,8 @@ tfoot > tr > * { border-top: 2px solid var(--ink); border-bottom: 0; font-weight
 .todo li::marker { color: var(--uvilla-ink); }
 
 /* Equipo */
-.team { list-style: none; padding: 0; margin: 0 0 48px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); border-top: 2px solid var(--ink); }
-.team li { display: grid; gap: 2px; padding: 16px 16px 16px 0; border-bottom: 1px solid var(--line); }
-.team strong { font-size: var(--step-1); }
-.team span { color: var(--ink-soft); font-size: 0.9375rem; }
+.team { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 2px solid var(--ink); }
+.team li { padding: 18px 16px 18px 0; border-bottom: 1px solid var(--line); font-size: var(--step-1); font-weight: 600; letter-spacing: -0.01em; }
 .refs-title { font-size: var(--step-1); margin-bottom: 12px; }
 .refs { margin: 0; padding-left: 22px; display: grid; gap: 10px; color: var(--ink-soft); font-size: 0.9375rem; max-width: 90ch; }
 .refs a { word-break: break-all; color: var(--ink); }
@@ -286,6 +265,175 @@ tfoot > tr > * { border-top: 2px solid var(--ink); border-bottom: 0; font-weight
 .footer-note { grid-column: 1 / -1; padding-top: 20px; border-top: 1px solid var(--forest-line); font-size: var(--step--1); }
 
 .not-found { padding: 120px var(--gutter); display: grid; gap: 16px; max-width: 640px; }
+
+
+/* ══════════════════════ Inicio: continúa la portada 3D ══════════════════════
+   Mismo bosque nocturno de la portada, tarjetas de vidrio y el ámbar de la uvilla. */
+.landing {
+  --night: #07100a;
+  --night-2: #0c1a11;
+  --glass: rgba(231, 243, 220, 0.045);
+  --glass-line: rgba(231, 243, 220, 0.12);
+  --mist: #a9bfae;
+  --amber: #f0952f;
+  background:
+    radial-gradient(1200px 600px at 85% 8%, rgba(240, 149, 47, 0.10), transparent 60%),
+    radial-gradient(900px 700px at 0% 45%, rgba(63, 128, 76, 0.16), transparent 60%),
+    radial-gradient(1000px 600px at 70% 92%, rgba(240, 149, 47, 0.07), transparent 60%),
+    linear-gradient(180deg, #040805 0%, var(--night) 18%, var(--night-2) 60%, var(--night) 100%);
+  color: #e7efe4;
+  position: relative;
+  z-index: 1;
+  overflow-x: clip;
+}
+.l-section { max-width: 1320px; margin: 0 auto; padding: clamp(72px, 10vw, 136px) var(--gutter) 0; }
+.l-section:last-child { padding-bottom: clamp(72px, 10vw, 136px); }
+.l-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 16px 56px; align-items: end; margin-bottom: clamp(36px, 5vw, 56px); }
+.landing h2 { font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem); font-weight: 800; letter-spacing: -0.035em; line-height: 1.02; color: #fff; text-wrap: balance; }
+.l-head p { color: var(--mist); font-size: var(--step-1); line-height: 1.55; max-width: 58ch; }
+.l-lead { margin-top: 16px; color: var(--mist); font-size: var(--step-1); line-height: 1.55; max-width: 52ch; }
+
+/* Pasos: la línea ámbar se dibuja una vez al llegar a la sección */
+.journey { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; position: relative; }
+.journey::before {
+  content: ''; position: absolute; top: 31px; left: 32px; right: 32px; height: 2px;
+  background: linear-gradient(90deg, var(--amber), rgba(240, 149, 47, 0.25));
+  transform: scaleX(0); transform-origin: left; transition: transform 1.4s cubic-bezier(.2, .8, .2, 1);
+}
+.journey.is-visible::before { transform: scaleX(1); }
+.journey li { position: relative; padding: 0 8px 0 0; }
+.journey-icon {
+  position: relative; z-index: 1; display: grid; place-items: center;
+  width: 64px; height: 64px; border-radius: 20px; margin-bottom: 22px;
+  color: var(--amber);
+  background: linear-gradient(160deg, #173523, #0b1a10);
+  border: 1px solid rgba(240, 149, 47, 0.35);
+  box-shadow: 0 0 0 6px var(--night-2), 0 12px 30px -12px rgba(240, 149, 47, 0.45);
+}
+.step-icon { width: 30px; height: 30px; }
+.journey h3 { font-size: var(--step-1); font-weight: 700; color: #fff; margin-bottom: 8px; max-width: 17ch; line-height: 1.25; }
+.journey p { color: var(--mist); font-size: 0.9375rem; max-width: 30ch; }
+
+.figures { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: clamp(48px, 7vw, 88px) 0 0; border-top: 1px solid var(--glass-line); }
+.figures div { padding: 26px 20px 0 0; display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 4px; }
+.figures dd {
+  margin: 0; font-size: clamp(2.2rem, 1.6rem + 2.2vw, 3.6rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(180deg, #ffd9a6 0%, var(--amber) 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.figures dt { color: var(--mist); font-size: 0.9375rem; }
+
+/* Resultado */
+.result-block { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr); gap: clamp(36px, 6vw, 88px); align-items: center; }
+.result-parts { margin: 32px 0 0; display: grid; border-top: 1px solid var(--glass-line); }
+.result-parts div { display: grid; grid-template-columns: 170px 1fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--glass-line); }
+.result-parts dt { font-weight: 700; color: #fff; }
+.result-parts dd { margin: 0; color: var(--mist); font-size: 0.9375rem; }
+.hint { margin-top: 20px; color: var(--amber); font-weight: 600; font-size: 0.9375rem; }
+.demo-stage { position: relative; }
+.demo-stage::before {
+  content: ''; position: absolute; inset: -12% -8%; z-index: 0; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(240, 149, 47, 0.22), transparent 70%);
+  filter: blur(10px);
+}
+.landing .demo {
+  position: relative; z-index: 1;
+  background: linear-gradient(165deg, rgba(28, 58, 42, 0.92), rgba(10, 24, 15, 0.95));
+  border: 1px solid rgba(240, 149, 47, 0.28);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Tarjetas de órgano */
+.organ-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.organ-card {
+  position: relative; display: grid; gap: 6px; align-content: start;
+  padding: 28px 28px 26px; border-radius: 22px; text-decoration: none; color: #e7efe4;
+  background: linear-gradient(170deg, rgba(231, 243, 220, 0.07), rgba(231, 243, 220, 0.02));
+  border: 1px solid var(--glass-line);
+  overflow: hidden;
+  transition: border-color .25s, transform .25s cubic-bezier(.2, .8, .2, 1), background .25s;
+}
+.organ-card::after {
+  content: ''; position: absolute; inset: auto -30% -60% -30%; height: 80%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(240, 149, 47, 0.18), transparent);
+  opacity: 0; transition: opacity .3s;
+}
+.organ-card:hover, .organ-card:focus-visible { border-color: rgba(240, 149, 47, 0.6); transform: translateY(-4px); }
+.organ-card:hover::after, .organ-card:focus-visible::after { opacity: 1; }
+.organ-art { width: 132px; height: 132px; margin-bottom: 14px; filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.45)); transition: transform .4s cubic-bezier(.2, .8, .2, 1); }
+.organ-card:hover .organ-art { transform: rotate(-4deg) scale(1.04); }
+.organ-card strong { font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; color: #fff; line-height: 1.1; }
+.organ-card-meta { color: var(--amber); font-weight: 600; font-size: 0.875rem; }
+.organ-card-note { color: var(--mist); font-size: 0.9375rem; min-height: 3em; }
+.organ-card-go {
+  margin-top: 14px; justify-self: start; display: inline-flex; align-items: center; min-height: 42px; padding: 0 18px;
+  border-radius: 999px; background: var(--amber); color: #2a1503; font-weight: 700; font-size: 0.9375rem;
+}
+.docs-link { margin-top: 28px; }
+.docs-link a { color: #e7efe4; text-underline-offset: 4px; }
+.docs-link a:hover { color: var(--amber); }
+
+/* Equipo */
+.landing .team { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; border: 0; }
+.landing .team li {
+  display: flex; align-items: center; gap: 14px; padding: 16px; border: 1px solid var(--glass-line); border-radius: 16px;
+  background: var(--glass); font-size: 1.0625rem; font-weight: 600; color: #fff;
+}
+.landing .team-initials {
+  flex-shrink: 0; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+  font-size: 0.9375rem; font-weight: 800; color: #2a1503;
+  background: radial-gradient(circle at 35% 30%, #ffd28a, var(--amber) 60%, #b85d14);
+}
+
+/* El pie continúa el mismo fondo en la portada */
+.landing + .site-footer { background: #040805; border-top: 1px solid rgba(231, 243, 220, 0.08); }
+
+@media (max-width: 1100px) {
+  .landing .team { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 960px) {
+  .l-head { grid-template-columns: 1fr; }
+  .journey { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 40px; }
+  .journey::before { display: none; }
+  .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .result-block { grid-template-columns: 1fr; }
+  .organ-cards { grid-template-columns: 1fr; }
+  .organ-card { grid-template-columns: 112px 1fr; column-gap: 20px; }
+  .organ-card .organ-art { grid-row: 1 / span 5; width: 112px; height: 112px; margin: 0; }
+  .landing .team { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .journey { grid-template-columns: 1fr; }
+  .result-parts div { grid-template-columns: 1fr; gap: 4px; }
+  .organ-card { grid-template-columns: 84px 1fr; padding: 20px; }
+  .organ-card .organ-art { width: 84px; height: 84px; }
+  .organ-card strong { font-size: 1.6rem; }
+  .landing .team { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey::before { transform: none; }
+}
+
+/* ─────────────── Documentación ─────────────── */
+.docs-head { max-width: 1320px; margin: 0 auto; padding: clamp(40px, 6vw, 80px) var(--gutter) 8px; }
+.docs-head h1 { font-size: var(--step-4); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
+.docs-head > p { margin-top: 16px; max-width: 64ch; color: var(--ink-soft); font-size: var(--step-1); line-height: 1.55; }
+.toc { margin: 32px 0 24px; }
+.toc ol { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; counter-reset: toc; }
+.toc li { counter-increment: toc; }
+.toc a { display: inline-flex; gap: 8px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); text-decoration: none; font-size: 0.9375rem; }
+.toc a::before { content: counter(toc); color: var(--uvilla-ink); font-weight: 700; }
+.toc a:hover { border-color: var(--ink); }
+.fold { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.fold > summary { cursor: pointer; padding: 18px 22px; font-weight: 700; list-style-position: inside; }
+.fold[open] > summary { border-bottom: 1px solid var(--line); }
+.fold > .arch, .fold > .note { margin: 22px; }
+.site-header nav a[aria-current=page]:not(.nav-cta) { color: var(--ink); background: color-mix(in srgb, var(--ink) 8%, transparent); }
+
+@media (max-width: 960px) {
+  .team { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 
 /* ══════════════════════ Laboratorio ══════════════════════ */
 .lab { max-width: 1320px; margin: 0 auto; padding: clamp(32px, 5vw, 64px) var(--gutter) 64px; }
@@ -391,7 +539,6 @@ tfoot > tr > * { border-top: 2px solid var(--ink); border-bottom: 0; font-weight
   .site-header nav.is-open { display: flex; }
   .site-header nav a { padding: 12px 8px; font-size: var(--step-0); }
   .site-header .nav-cta { margin: 8px 0 0; text-align: center; justify-content: center; }
-  .hero { grid-template-columns: 1fr; }
   .block-head, .cols { grid-template-columns: 1fr; }
   .findings { grid-template-columns: 1fr; gap: 20px; }
   .caveats { grid-template-columns: 1fr; }
@@ -409,7 +556,6 @@ tfoot > tr > * { border-top: 2px solid var(--ink); border-bottom: 0; font-weight
   .steps { grid-template-columns: 1fr; }
   .flow { grid-template-columns: 1fr; }
   .flow li::after { display: none; }
-  .hero-facts div { padding-right: 16px; margin-right: 16px; }
   .arch-layer { grid-template-columns: 1fr; gap: 8px; }
   .arch-name { padding-top: 0; }
   .arch-link { margin-left: 12px; }

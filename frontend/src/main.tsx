@@ -2,10 +2,14 @@ import { lazy, StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import '@fontsource-variable/schibsted-grotesk/wght.css';
 import '@fontsource-variable/schibsted-grotesk/wght-italic.css';
+import '@designcodeio/threeui/style.css';
 import './style.css';
+import './portada.css';
+import { MotionSurface } from './components/MotionSurface';
 
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const LaboratoryPage = lazy(() => import('./pages/LaboratoryPage'));
+const DocsPage = lazy(() => import('./pages/DocsPage'));
 
 const path = location.pathname.replace(/\/$/, '') || '/';
 if (path === '/' && location.hash === '#laboratorio') location.replace('/laboratorio');
@@ -22,9 +26,11 @@ function NotFound() {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Suspense fallback={<p className="route-loading">Cargando…</p>}>
-      {path === '/' ? <LandingPage /> : path === '/laboratorio' ? <LaboratoryPage /> : <NotFound />}
-    </Suspense>
+    <MotionSurface>
+      <Suspense fallback={<p className="route-loading">Cargando…</p>}>
+        {path === '/' ? <LandingPage /> : path === '/laboratorio' ? <LaboratoryPage /> : path === '/documentacion' ? <DocsPage /> : <NotFound />}
+      </Suspense>
+    </MotionSurface>
   </StrictMode>,
 );
 

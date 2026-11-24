@@ -11,10 +11,16 @@ type HistoryItem = { id: string; part: Part; label: string; detail: string; date
 
 const PART_LABEL: Record<Part, string> = { hojas: 'Hojas', tallos: 'Tallos', frutos: 'Frutos' };
 
+/** La portada enlaza a /laboratorio?parte=hojas|tallos|frutos para empezar con esa parte elegida. */
+function initialPart(): Part {
+  const p = new URLSearchParams(location.search).get('parte');
+  return p === 'tallos' || p === 'frutos' || p === 'hojas' ? p : 'hojas';
+}
+
 export function Laboratory() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const [part, setPart] = useState<Part>('hojas');
+  const [part, setPart] = useState<Part>(initialPart);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState('');
   const [result, setResult] = useState<Result | null>(null);
