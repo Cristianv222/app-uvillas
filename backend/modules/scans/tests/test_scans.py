@@ -132,3 +132,32 @@ class ScanApiTests(TestCase):
 
         # Admin filtrando por un UUID inexistente devuelve 0
         self.assertEqual(c_admin.get(f"/api/scans/?user={uuid.uuid4()}").data["count"], 0)
+
+
+class AccountHistoryTests(TestCase):
+    def test_registration_history_survives_login_and_is_private(self):
+        client = APIClient()
+        credentials = {"email": "history@example.com", "password": "cultivo-seguro-123"}
+        registered = client.post("/api/auth/register/", credentials, format="json")
+        self.assertEqual(registered.status_code, 201)
+        client.credentials(HTTP_AUTHORIZATION=f"Bearer {registered.data['access']}")
+        saved = client.post("/api/scans/", {
+            "part": "hojas", "label_code": "mancha_gris", "label_name": "Mancha gris",
+            "confidence": 0.8, "source": "server", "notes": "Diagnóstico experto: Mancha gris.",
+        }, format="json")
+        self.assertEqual(saved.status_code, 201)
+        client.post("/api/auth/logout/", {"refresh": registered.data["refresh"]}, format="json")
+        client.credentials()
+        login = client.post("/api/auth/login/", credentials, format="json")
+        client.credentials(HTTP_AUTHORIZATION=f"Bearer {login.data['access']}")
+        history = client.get("/api/scans/?part=hojas").data
+        self.assertEqual(history["count"], 1)
+        self.assertEqual(history["results"][0]["notes"], saved.data["notes"])
+        self.assertEqual(client.get("/api/scans/?part=frutos").data["count"], 0)
+        other = APIClient()
+        registration = other.post("/api/auth/register/", {
+            "email": "other@example.com", "password": "cultivo-seguro-456",
+        }, format="json")
+        other.credentials(HTTP_AUTHORIZATION=f"Bearer {registration.data['access']}")
+        self.assertEqual(other.get("/api/scans/").data["count"], 0)
+        self.assertEqual(other.get(f"/api/scans/{saved.data['id']}/").status_code, 404)

@@ -351,3 +351,16 @@ depende de React, así que puede portarse al backend o al móvil.
 ```bash
 cd frontend && npm test   # pruebas del motor de reglas
 ```
+
+
+### Acceso e historial en Android y laboratorio web
+
+La app Android (Capacitor) abre directamente el laboratorio con registro e inicio de sesión.
+Configura primero el servidor en el teléfono. Cada cuenta puede guardar resultados y consultar
+su historial por hojas, tallos o frutos, con paginación y actualización manual. El historial
+se conserva en el backend al cerrar sesión o cambiar de dispositivo. Se guarda el resultado
+del modelo y, en observaciones, el diagnóstico experto, respuestas y clima; la foto no se adjunta.
+El acceso se conserva durante la sesión de la pestaña/WebView, incluso al recargar; al cerrarla
+puede ser necesario iniciar sesión de nuevo. Cambiar de servidor cierra la sesión.
+Registro, login y consulta del historial en Capacitor requieren conexión al servidor.
+La aplicación Expo mantiene su flujo offline y ahora utiliza directamente los tokens del registro.

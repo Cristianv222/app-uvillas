@@ -30,7 +30,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <MotionSurface>
       <Suspense fallback={<p className="route-loading">Cargando…</p>}>
-        {path === '/' ? <LandingPage /> : path === '/laboratorio' ? <LaboratoryPage /> : path === '/documentacion' ? <DocsPage /> : path === '/requisitos' ? <RequirementsPage /> : <NotFound />}
+        {path === '/' ? (isNativeApp() ? <LaboratoryPage /> : <LandingPage />) : path === '/laboratorio' ? <LaboratoryPage /> : path === '/documentacion' ? <DocsPage /> : path === '/requisitos' ? <RequirementsPage /> : <NotFound />}
       </Suspense>
     </MotionSurface>
   </StrictMode>,

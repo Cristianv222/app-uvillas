@@ -60,10 +60,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       login: async (email, password) =>
         startSession(await api('/api/auth/login/', { method: 'POST', auth: false, body: { email: email.trim().toLowerCase(), password } })),
       register: async (email, password, fullName) => {
-        await api('/api/auth/register/', {
+        await startSession(await api('/api/auth/register/', {
           method: 'POST', auth: false, body: { email: email.trim().toLowerCase(), password, full_name: fullName.trim() },
-        });
-        startSession(await api('/api/auth/login/', { method: 'POST', auth: false, body: { email: email.trim().toLowerCase(), password } }));
+        }));
       },
       logout: async () => {
         const tokens = await secureStorage.getTokens();

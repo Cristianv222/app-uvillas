@@ -1,3 +1,4 @@
+import { clearSession } from '../api';
 import { useState } from 'react';
 import { checkServer, currentServer, isNativeApp, normalizeServerUrl, setServerUrl } from '../lib/server';
 
@@ -14,6 +15,7 @@ export function ServerBar() {
     if (!url) return;
     setState('checking');
     const ok = await checkServer(url);
+    if (url !== currentServer()) clearSession();
     setServerUrl(url);
     setServer(url);
     setValue(url.replace(/^http:\/\//, ''));

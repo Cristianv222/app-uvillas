@@ -723,3 +723,17 @@ body:has(.lab-night), body:has(.landing) { background: #040805; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+
+/* Cuenta y acceso adaptados al teléfono. */
+.account-gate { max-width: 620px; }
+.account-form { display: grid; gap: 18px; }
+.account-form h1 { font-size: clamp(2rem, 7vw, 3rem); margin: 0; }
+.account-form label { display: grid; gap: 8px; }
+.account-form input, .session select { font: inherit; color: #f6f5e9; background: #182c26; border: 1px solid #63786b; border-radius: 12px; padding: 14px; min-width: 0; }
+.account-form input:focus-visible, .session select:focus-visible { outline: 2px solid #e7b95b; outline-offset: 3px; }
+.account-form .password-toggle { display: flex; align-items: center; gap: 10px; }
+.account-strip { max-width: 1100px; margin: auto; padding: 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.history-notes { white-space: pre-wrap; overflow-wrap: anywhere; }
+.session details { flex-basis: 100%; }
+.session summary { cursor: pointer; padding: 10px 0; }
+@media (max-width: 600px) { .account-form { padding: 22px; } .session li { flex-wrap: wrap; } }

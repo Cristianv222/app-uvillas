@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { api } from '../api';
+import { AccountHistory } from './AccountHistory';
 import { assessImage, diagnose, planQuestions, type Diagnosis } from '../expert/engine';
 import { CONTROL, DISEASES, type Answer, type Part } from '../expert/knowledgeBase';
 import { prepareImage } from '../lib/image';
@@ -9,7 +10,6 @@ import { ServerBar } from './ServerBar';
 
 type Prediction = { code: string; name: string; confidence: number; is_healthy: boolean };
 type Result = { part: Part; best: Prediction; predictions: Prediction[] };
-type HistoryItem = { id: string; part: Part; label: string; detail: string; date: string };
 
 const PARTS: { id: Part; name: string; hint: string; Art: typeof LeafArt }[] = [
   { id: 'hojas', name: 'Hoja', hint: '8 clases', Art: LeafArt },
@@ -33,7 +33,7 @@ function initialPart(): Part | null {
 
 const pct = (x: number) => `${(x * 100).toFixed(1)} %`;
 
-export function Laboratory() {
+export function Laboratory({ userId }: { userId: string }) {
   const [part, setPart] = useState<Part | null>(initialPart);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState('');
@@ -47,7 +47,8 @@ export function Laboratory() {
   const [humidity, setHumidity] = useState(85);
   const [showDiagnosis, setShowDiagnosis] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [historyRevision, setHistoryRevision] = useState(0);
+  const [saving, setSaving] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
   const [showExtra, setShowExtra] = useState(false);
@@ -128,14 +129,25 @@ export function Laboratory() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function save() {
-    if (!result || !assessment || saved) return;
-    const base = { id: crypto.randomUUID(), part: result.part, date: new Date().toISOString() };
-    const item: HistoryItem = diagnosis && showDiagnosis
-      ? { ...base, label: diagnosis.best?.name ?? 'Sin diagnóstico claro', detail: diagnosis.best ? `Certeza ${diagnosis.best.cf.toFixed(2)}` : 'Indeterminado' }
-      : { ...base, label: assessment.verdict === 'healthy' ? `${PART_NAME[result.part]} sana` : result.best.name, detail: `Modelo ${pct(result.best.confidence)}` };
-    setHistory(items => [item, ...items]);
-    setSaved(true);
+  async function save() {
+    if (!result || !assessment || saved || saving) return;
+    setSaving(true); setError('');
+    const expert = diagnosis && showDiagnosis ? diagnosis : null;
+    const notes = expert
+      ? [`Diagnóstico experto: ${expert.best?.name ?? 'Sin diagnóstico claro'}. Nivel: ${LEVEL_TEXT[expert.level]}.`,
+          `Factor de certeza: ${expert.best?.cf.toFixed(2) ?? 'indeterminado'}.`,
+          `Observaciones: ${JSON.stringify(answers)}.`,
+          ...(useClimate ? [`Clima: ${temperature} °C, humedad ${humidity} %.`] : [])].join('\n')
+      : assessment.message;
+    try {
+      await api('scans/', { method: 'POST', body: JSON.stringify({
+        part: result.part, label_code: result.best.code, label_name: result.best.name,
+        confidence: result.best.confidence, top_k: result.predictions, source: 'server', notes,
+      }) });
+      setSaved(true);
+      setHistoryRevision(v => v + 1);
+    } catch (e) { setError((e as Error).message); }
+    finally { setSaving(false); }
   }
 
   return (
@@ -236,7 +248,7 @@ export function Laboratory() {
           {assessment.verdict !== 'sick' && !askAnyway && (
             <div className="card-actions">
               {assessment.verdict === 'retake' && <button className="pill pill-amber" onClick={startOver}>Tomar otra foto</button>}
-              {assessment.verdict === 'healthy' && <button className="pill pill-amber" onClick={save} disabled={saved}>{saved ? 'Guardado en esta sesión' : 'Guardar resultado'}</button>}
+              {assessment.verdict === 'healthy' && <button className="pill pill-amber" onClick={save} disabled={saved || saving}>{saving ? 'Guardando…' : saved ? 'Guardado en tu cuenta' : 'Guardar resultado'}</button>}
               <button className="pill pill-ghost" onClick={() => setAskAnyway(true)}>
                 {assessment.verdict === 'healthy' ? 'Veo síntomas: revisar igual' : 'Continuar con las preguntas'}
               </button>
@@ -288,11 +300,11 @@ export function Laboratory() {
               <div className="sliders">
                 <label>
                   <span>Temperatura <output>{temperature} °C</output></span>
-                  <input type="range" min={0} max={35} step={1} value={temperature} onChange={e => setTemperature(Number(e.target.value))} />
+                  <input type="range" min={0} max={35} step={1} value={temperature} onChange={e => { setTemperature(Number(e.target.value)); setSaved(false); }} />
                 </label>
                 <label>
                   <span>Humedad relativa <output>{humidity} %</output></span>
-                  <input type="range" min={20} max={100} step={1} value={humidity} onChange={e => setHumidity(Number(e.target.value))} />
+                  <input type="range" min={20} max={100} step={1} value={humidity} onChange={e => { setHumidity(Number(e.target.value)); setSaved(false); }} />
                 </label>
               </div>
             )}
@@ -308,30 +320,13 @@ export function Laboratory() {
           <DiagnosisView d={diagnosis} />
           <p className="live-note">Si cambias una respuesta o el clima, el diagnóstico se recalcula al instante.</p>
           <div className="card-actions">
-            <button className="pill pill-amber" onClick={save} disabled={saved}>{saved ? 'Guardado en esta sesión' : 'Guardar resultado'}</button>
+            <button className="pill pill-amber" onClick={save} disabled={saved || saving}>{saving ? 'Guardando…' : saved ? 'Guardado en tu cuenta' : 'Guardar resultado'}</button>
             <button className="pill pill-ghost" onClick={startOver}>Nuevo análisis</button>
           </div>
         </Card>
       )}
 
-      <div className="session">
-        <h2>Análisis de esta sesión</h2>
-        {history.length === 0
-          ? <p>Aún no guardas resultados. Se conservan mientras la página esté abierta.</p>
-          : (
-            <ul>
-              {history.map(h => (
-                <li key={h.id}>
-                  <span className="session-part">{PART_NAME[h.part]}</span>
-                  <strong>{h.label}</strong>
-                  <span>{h.detail}</span>
-                  <time>{new Date(h.date).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' })}</time>
-                </li>
-              ))}
-            </ul>
-          )}
-        <small>El resultado orienta y no reemplaza la visita de un ingeniero agrónomo.</small>
-      </div>
+      <AccountHistory userId={userId} revision={historyRevision} />
     </section>
   );
 }
