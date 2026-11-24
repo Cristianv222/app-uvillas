@@ -30,9 +30,13 @@ def _serialize(kind, obj) -> dict:
     if kind == "plots":
         base["farm_id"] = str(obj.farm_id)
     if kind == "scans":
-        base.update(farm_id=str(obj.farm_id) if obj.farm_id else None,
-                    plot_id=str(obj.plot_id) if obj.plot_id else None,
-                    is_healthy=obj.is_healthy, has_image=bool(obj.image))
+        base.update(
+            farm_id=str(obj.farm_id) if obj.farm_id else None,
+            plot_id=str(obj.plot_id) if obj.plot_id else None,
+            is_healthy=obj.is_healthy,
+            has_image=bool(obj.image),
+            image_url=obj.image.url if obj.image else None,
+        )
     return base
 
 

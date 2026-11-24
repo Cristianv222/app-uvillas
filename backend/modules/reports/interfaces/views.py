@@ -20,8 +20,13 @@ def _date(value, name):
 class SummaryView(APIView):
     def get(self, request):
         p = request.query_params
+        target_user = p.get("user") if getattr(request.user, "role", None) == "admin" else None
         data = GetSummary(DjangoReportQueries()).execute(
-            request.user, farm=p.get("farm"), plot=p.get("plot"),
-            date_from=_date(p.get("date_from"), "date_from"), date_to=_date(p.get("date_to"), "date_to"),
+            request.user,
+            farm=p.get("farm"),
+            plot=p.get("plot"),
+            date_from=_date(p.get("date_from"), "date_from"),
+            date_to=_date(p.get("date_to"), "date_to"),
+            target_user=target_user,
         )
         return Response(data)

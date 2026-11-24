@@ -1,5 +1,8 @@
+name: app-uvillas
+
 services:
   db:
+    container_name: uvillas-db
     image: postgres:16-alpine
     env_file: .env
     volumes: [pgdata:/var/lib/postgresql/data]
@@ -8,8 +11,10 @@ services:
       interval: 5s
       retries: 10
   redis:
+    container_name: uvillas-redis
     image: redis:7-alpine
   backend:
+    container_name: uvillas-backend
     build: ./backend
     env_file: .env
     environment:

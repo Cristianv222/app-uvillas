@@ -10,6 +10,17 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
+class UpdateUserRoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ["role"]
+
+    def validate_role(self, value):
+        if value not in ("farmer", "admin"):
+            raise serializers.ValidationError("Rol inválido. Debe ser 'farmer' o 'admin'.")
+        return value
+
+
 class RegisterSerializer(serializers.Serializer):
     email = serializers.CharField()
     password = serializers.CharField(write_only=True)

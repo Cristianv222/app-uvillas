@@ -79,3 +79,24 @@ class SyncApiTests(TestCase):
         r = c.post("/api/sync/push/", {"scans": [{"id": str(uuid.uuid4()), "updated_at": timezone.now().isoformat(),
                                                   "part": "raices", "label_code": "x", "confidence": 0.5}]}, format="json")
         self.assertEqual(r.data["rejected"][0]["code"], "invalid_part")
+
+    def test_pull_includes_image_info(self):
+        import io
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        from PIL import Image
+
+        c = client_for("img@x.co")
+        farm, plot, scan_id, body = self.payload(timezone.now())
+        c.post("/api/sync/push/", body, format="json")
+
+        buf = io.BytesIO()
+        Image.new("RGB", (32, 32), color="yellow").save(buf, format="JPEG")
+        file_obj = SimpleUploadedFile("yellow.jpg", buf.getvalue(), content_type="image/jpeg")
+
+        c.post(f"/api/scans/{scan_id}/image/", {"image": file_obj}, format="multipart")
+
+        pulled = c.get("/api/sync/pull/").data
+        scan_record = next(s for s in pulled["scans"] if s["id"] == scan_id)
+        self.assertTrue(scan_record["has_image"])
+        self.assertIsNotNone(scan_record["image_url"])
+        self.assertIn("yellow", scan_record["image_url"])

@@ -9,6 +9,9 @@ class FarmViewSet(viewsets.ModelViewSet):
     serializer_class = FarmSerializer
 
     def get_queryset(self):
+        if getattr(self.request.user, "role", None) == "admin":
+            user_param = self.request.query_params.get("user")
+            return Farm.objects.filter(owner_id=user_param, is_deleted=False) if user_param else Farm.objects.filter(is_deleted=False)
         return Farm.objects.filter(owner=self.request.user, is_deleted=False)
 
     def perform_create(self, serializer):
@@ -28,6 +31,16 @@ class PlotViewSet(viewsets.ModelViewSet):
     serializer_class = PlotSerializer
 
     def get_queryset(self):
+        if getattr(self.request.user, "role", None) == "admin":
+            qs = Plot.objects.filter(is_deleted=False)
+            farm = self.request.query_params.get("farm")
+            user_param = self.request.query_params.get("user")
+            if farm:
+                qs = qs.filter(farm_id=farm)
+            if user_param:
+                qs = qs.filter(farm__owner_id=user_param)
+            return qs
+
         qs = Plot.objects.filter(farm__owner=self.request.user, is_deleted=False)
         farm = self.request.query_params.get("farm")
         return qs.filter(farm_id=farm) if farm else qs

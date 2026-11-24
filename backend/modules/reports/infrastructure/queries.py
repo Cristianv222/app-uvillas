@@ -4,8 +4,11 @@ from django.db.models.functions import TruncDate
 from modules.scans.infrastructure.models import Scan
 
 
-def _base(user, farm=None, plot=None, date_from=None, date_to=None):
-    qs = Scan.objects.filter(user=user, is_deleted=False)
+def _base(user, farm=None, plot=None, date_from=None, date_to=None, target_user=None):
+    if getattr(user, "role", None) == "admin":
+        qs = Scan.objects.filter(user_id=target_user, is_deleted=False) if target_user else Scan.objects.filter(is_deleted=False)
+    else:
+        qs = Scan.objects.filter(user=user, is_deleted=False)
     if farm:
         qs = qs.filter(farm_id=farm)
     if plot:
