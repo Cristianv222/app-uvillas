@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { assessImage, combineCF, diagnose, questionsFor } from './engine';
+import { assessImage, combineCF, diagnose, planQuestions, questionsFor } from './engine';
 import { normalizeCode } from './knowledgeBase';
 
 describe('combineCF', () => {
@@ -79,5 +79,30 @@ describe('diagnose', () => {
     const d = diagnose('hojas', [{ code: 'mancha_grasienta', confidence: 0.8 }], { aceitosa: 'si' });
     expect(d.best?.code).toBe('mancha_grasienta');
     expect(d.best?.warning).toMatch(/cáliz/);
+  });
+});
+
+describe('planQuestions', () => {
+  it('hace pocas preguntas, solo las que separan a los candidatos del modelo', () => {
+    const plan = planQuestions('frutos', [{ code: 'moho_blanco', confidence: 0.62 }, { code: 'escleroteniosis', confidence: 0.21 }, { code: 'fruto_sano', confidence: 0.1 }]);
+    const ids = plan.questions.map(q => q.id);
+    expect(ids.length).toBeLessThanOrEqual(4);
+    expect(ids).toContain('esclerocios');
+    expect(ids).toContain('micelio');
+    expect(ids).not.toContain('desde_caliz');
+    expect(plan.candidates[0]).toBe('moho_blanco');
+  });
+
+  it('agrega la enfermedad que el modelo suele confundir', () => {
+    const plan = planQuestions('hojas', [{ code: 'muerte_descendente', confidence: 0.9 }]);
+    expect(plan.candidates).toContain('mancha_gris');
+    const ids = plan.questions.map(q => q.id);
+    expect(ids).toContain('lesion_v');
+    expect(ids).toContain('manchas_redondas');
+  });
+
+  it('las demás preguntas quedan disponibles aparte', () => {
+    const plan = planQuestions('hojas', [{ code: 'mancha_gris', confidence: 0.98 }]);
+    expect(plan.questions.length + plan.extra.length).toBe(questionsFor('hojas').length);
   });
 });

@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { api } from '../api';
-import { assessImage, diagnose, questionsFor, type Diagnosis } from '../expert/engine';
+import { assessImage, diagnose, planQuestions, type Diagnosis } from '../expert/engine';
 import { CONTROL, DISEASES, type Answer, type Part } from '../expert/knowledgeBase';
 import { prepareImage } from '../lib/image';
+import { CameraCapture, canUseCamera } from './CameraCapture';
 import { FruitArt, LeafArt, StemArt } from './Illustrations';
 
 type Prediction = { code: string; name: string; confidence: number; is_healthy: boolean };
@@ -47,6 +48,8 @@ export function Laboratory() {
   const [saved, setSaved] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [dragging, setDragging] = useState(false);
+  const [cameraOpen, setCameraOpen] = useState(false);
+  const [showExtra, setShowExtra] = useState(false);
 
   useEffect(() => {
     if (!file) { setPreview(''); return; }
@@ -57,6 +60,9 @@ export function Laboratory() {
 
   const assessment = result ? assessImage(result.predictions) : null;
   const asking = !!result && !!assessment && (assessment.verdict === 'sick' || askAnyway);
+
+  const plan = useMemo(() => (result ? planQuestions(result.part, result.predictions) : null), [result]);
+  const candidateNames = plan ? plan.candidates.slice(0, 3).map(c => DISEASES[c].name) : [];
 
   const diagnosis: Diagnosis | null = useMemo(() => {
     if (!result || !asking) return null;
@@ -70,6 +76,7 @@ export function Laboratory() {
     setAskAnyway(false);
     setAnswers({});
     setShowDiagnosis(false);
+    setShowExtra(false);
     setSaved(false);
   }
 
@@ -181,16 +188,23 @@ export function Laboratory() {
                 </div>
               )}
             <div className="dropzone-actions">
-              <label className="pill pill-ghost">
-                Tomar foto
-                <input className="visually-hidden" type="file" accept="image/*" capture="environment" disabled={busy} onChange={e => { takeFile(e.target.files?.[0]); e.target.value = ''; }} />
-              </label>
+              {canUseCamera()
+                ? <button type="button" className="pill pill-ghost" disabled={busy} onClick={() => setCameraOpen(true)}>Tomar foto</button>
+                : (
+                  <label className="pill pill-ghost">
+                    Tomar foto
+                    <input className="visually-hidden" type="file" accept="image/*" capture="environment" disabled={busy} onChange={e => { takeFile(e.target.files?.[0]); e.target.value = ''; }} />
+                  </label>
+                )}
               <label className="pill pill-ghost">
                 {preview ? 'Cambiar foto' : 'Elegir de la galería'}
                 <input className="visually-hidden" type="file" accept="image/*" disabled={busy} onChange={e => { takeFile(e.target.files?.[0]); e.target.value = ''; }} />
               </label>
             </div>
           </div>
+          {cameraOpen && (
+            <CameraCapture onClose={() => setCameraOpen(false)} onCapture={f => { setCameraOpen(false); takeFile(f); }} />
+          )}
           <button className="pill pill-amber pill-lg" disabled={!file || busy} onClick={analyze}>
             {busy ? <><span className="spinner" aria-hidden="true" /> Analizando…</> : 'Analizar foto'}
           </button>
@@ -232,9 +246,13 @@ export function Laboratory() {
       {/* 4 · Síntomas */}
       {result && asking && (
         <Card n={4} title="¿Qué observas en la planta?" active={step === 3} scrollOnMount>
-          <p className="card-intro">El modelo distingue bien sano de enfermo, pero confunde las enfermedades entre sí. Responde lo que veas; si no estás seguro, deja «No sé».</p>
+          <p className="card-intro">
+            {plan && plan.questions.length > 0
+              ? <>Según el modelo, puede ser <strong>{candidateNames.join(candidateNames.length > 2 ? ', ' : ' o ').replace(/, ([^,]*)$/, ' o $1')}</strong>. Estas {plan.questions.length === 1 ? 'pregunta las distingue' : `${plan.questions.length} preguntas las distinguen`}; si no estás seguro, deja «No sé».</>
+              : 'Responde lo que veas; si no estás seguro, deja «No sé».'}
+          </p>
           <ul className="questions">
-            {questionsFor(result.part).map(q => {
+            {plan && [...plan.questions, ...(showExtra ? plan.extra : [])].map(q => {
               const value = answers[q.id] ?? 'nose';
               return (
                 <li key={q.id} className={value !== 'nose' ? 'answered' : ''}>
@@ -252,6 +270,11 @@ export function Laboratory() {
               );
             })}
           </ul>
+          {plan && plan.extra.length > 0 && (
+            <button type="button" className="more-questions" aria-expanded={showExtra} onClick={() => setShowExtra(v => !v)}>
+              {showExtra ? 'Mostrar solo las preguntas clave' : `Responder más preguntas (${plan.extra.length})`}
+            </button>
+          )}
 
           <div className={`climate ${useClimate ? 'on' : ''}`}>
             <label className="switch">

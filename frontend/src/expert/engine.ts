@@ -79,6 +79,62 @@ export function questionsFor(part: Part): Question[] {
   return QUESTIONS.filter(q => q.parts.includes(part));
 }
 
+/**
+ * Confusiones principales que mostró la evaluación de los modelos (matrices de confusión):
+ * si el modelo propone una, la otra también es candidata.
+ */
+const CONFUSIONS: Partial<Record<DiseaseCode, DiseaseCode[]>> = {
+  muerte_descendente: ['mancha_gris'],
+  mancha_gris: ['muerte_descendente'],
+  esclerotiniosis: ['moho_blanco', 'pudricion_dura'],
+  moho_blanco: ['esclerotiniosis'],
+  pudricion_dura: ['esclerotiniosis'],
+};
+
+export interface QuestionPlan {
+  /** Enfermedades entre las que hay que decidir, de la más a la menos probable según el modelo. */
+  candidates: DiseaseCode[];
+  /** Preguntas que más separan a esos candidatos, en orden. */
+  questions: Question[];
+  /** El resto de preguntas del órgano, por si el usuario quiere responder más. */
+  extra: Question[];
+}
+
+/**
+ * Elige pocas preguntas: solo las que distinguen entre las enfermedades que propone el modelo
+ * (y las que suele confundir con ellas). Cada pregunta puntúa por el peso de sus reglas sobre
+ * los candidatos; una pregunta que apoya a un candidato y descarta a otro vale más.
+ */
+export function planQuestions(part: Part, predictions: ModelPrediction[], max = 4): QuestionPlan {
+  const available = questionsFor(part);
+  const allowed = new Set(PART_DISEASES[part]);
+  const weight = new Map<DiseaseCode, number>();
+  for (const p of predictions) {
+    const code = normalizeCode(p.code) as DiseaseCode;
+    if (allowed.has(code) && p.confidence >= 0.02) weight.set(code, (weight.get(code) ?? 0) + p.confidence);
+  }
+  // Si el modelo solo vio la clase sana (el usuario pidió revisar igual), todas son candidatas.
+  if (weight.size === 0) PART_DISEASES[part].forEach(d => weight.set(d, 0.1));
+  for (const [code, w] of [...weight]) {
+    for (const partner of CONFUSIONS[code] ?? []) {
+      if (allowed.has(partner) && !weight.has(partner)) weight.set(partner, w * 0.5);
+    }
+  }
+  const candidates = [...weight.entries()].sort((a, b) => b[1] - a[1]).map(([c]) => c);
+
+  const scored = available.map(q => {
+    const rules = SYMPTOM_RULES.filter(r => r.question === q.id && weight.has(r.disease) && (!r.parts || r.parts.includes(part)));
+    const touched = new Set(rules.map(r => r.disease));
+    const score = rules.reduce((acc, r) => acc + Math.abs(r.cf) * (0.25 + (weight.get(r.disease) ?? 0)), 0)
+      * (touched.size > 1 ? 1.3 : 1);
+    return { q, score };
+  }).filter(x => x.score > 0).sort((a, b) => b.score - a.score);
+
+  const questions = scored.slice(0, max).map(x => x.q);
+  const chosen = new Set(questions.map(q => q.id));
+  return { candidates, questions, extra: available.filter(q => !chosen.has(q.id)) };
+}
+
 export function diagnose(
   part: Part,
   predictions: ModelPrediction[],
