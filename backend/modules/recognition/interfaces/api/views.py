@@ -27,3 +27,19 @@ class ClassifyView(APIView):
         use_case = ClassifyImage(get_classifier(), settings.RECOGNITION_MAX_IMAGE_BYTES)
         result = use_case.execute(request.data.get("part", ""), upload.read(), top_k=3)
         return Response(classification_to_dict(result))
+
+
+# Public, stateless laboratory. Private scan/history endpoints remain protected.
+from rest_framework.permissions import AllowAny
+from rest_framework.throttling import AnonRateThrottle
+
+
+class LaboratoryThrottle(AnonRateThrottle):
+    rate = '20/hour'
+    scope = 'laboratory'
+
+
+class LaboratoryClassifyView(ClassifyView):
+    permission_classes = [AllowAny]
+    authentication_classes = []
+    throttle_classes = [LaboratoryThrottle]

@@ -7,3 +7,7 @@ node_modules/
 media/
 staticfiles/
 .DS_Store
+
+# Web frontend
+frontend/dist/
+*.tsbuildinfo

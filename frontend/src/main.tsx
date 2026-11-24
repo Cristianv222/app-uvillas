@@ -1,0 +1,10 @@
+import {MotionSurface} from './components/MotionSurface';
+import '@designcodeio/threeui/style.css';
+import React, {lazy, Suspense} from 'react';
+import {createRoot} from 'react-dom/client';
+import './style.css';
+const LandingPage=lazy(()=>import('./pages/LandingPage'));
+const LaboratoryPage=lazy(()=>import('./pages/LaboratoryPage'));
+const path=location.pathname.replace(/\/$/,'')||'/';
+if(path==='/' && location.hash==='#laboratorio')location.replace('/laboratorio');
+createRoot(document.getElementById('root')!).render(<React.StrictMode><MotionSurface><Suspense fallback={<p className="route-loading">Preparando tu espacio…</p>}>{path==='/'?<LandingPage/>:path==='/laboratorio'?<LaboratoryPage/>:<main className="section"><h1>Página no encontrada</h1><p>Vuelve al inicio o entra al laboratorio.</p><a className="button" href="/">Inicio</a> <a href="/laboratorio">Laboratorio</a></main>}</Suspense></MotionSurface></React.StrictMode>);

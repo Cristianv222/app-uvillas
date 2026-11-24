@@ -262,3 +262,43 @@ Si cambias un modelo o `catalog.json` en `ml-models/`: ejecuta `npm run sync-mod
 - **Fotos del servidor**: las fotos subidas no se descargan a otros dispositivos (el `pull` solo indica `has_image`).
 - **Producción**: falta proxy HTTPS (nginx/Caddy), `DJANGO_DEBUG=0`, `DJANGO_ALLOWED_HOSTS` y CORS definidos, y compilar la app firmada.
 - **Catálogo**: contenido genérico, pendiente de validación agronómica.
+
+## Frontend web: landing botánica
+
+La landing vive en `frontend/` (React + TypeScript + Vite). Es independiente de
+`mobile/` y del backend: no necesita autenticación, base de datos ni modelos ML.
+Su recorrido por scroll presenta hoja, flor, cáliz y fruto con ilustraciones SVG,
+además de cuidado del cultivo y presentación de la app. El fondo animado utiliza
+`PredictiveArcCanvas` de `@designcodeio/threeui`.
+
+```bash
+# Solo la landing, sin arrancar servicios del backend:
+docker compose up -d --build frontend
+# Abrir http://localhost:8080
+
+# Desarrollo con recarga:
+cd frontend
+npm ci
+npm run dev
+# Validar TypeScript y generar dist/:
+npm run build
+```
+
+Para levantar todo: `docker compose up -d --build` (requiere el `.env` descrito
+arriba). Docker compila la web con Node y sirve los archivos con nginx.
+El móvil sigue requiriendo una compilación nativa; Docker no genera una app iOS/Android.
+
+El MCP `https://threeui.com/api/mcp` requiere autenticación; instalar el paquete npm
+no habilita el MCP. No incluir credenciales del MCP en el código del navegador.
+
+Ver [revisión y relevo del frontend](docs/FRONTEND_HANDOFF.md).
+
+### Laboratorio web conectado
+
+`http://localhost:8080/#laboratorio` permite crear cuenta o iniciar sesión,
+analizar JPEG/PNG de hasta 5 MB con `/api/recognition/classify/`, guardar resultados
+con `/api/scans/` y consultar el historial real. Las fotos seleccionadas se envían
+al clasificador, pero no se adjuntan al registro guardado. La sesión JWT permanece
+en memoria y se renueva mientras la página está abierta; recargar requiere login.
+Nginx y Vite redirigen `/api/` al backend. El análisis web necesita servidor disponible.
+Créditos de fotografías: `frontend/public/photos/CREDITS.txt`.

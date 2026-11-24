@@ -1,5 +1,5 @@
 from django.urls import path
 
-from .views import ClassifyView
+from .views import ClassifyView, LaboratoryClassifyView
 
-urlpatterns = [path("classify/", ClassifyView.as_view())]
+urlpatterns = [path("laboratory/", LaboratoryClassifyView.as_view()), path("classify/", ClassifyView.as_view())]
