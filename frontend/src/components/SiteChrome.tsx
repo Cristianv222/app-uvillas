@@ -17,10 +17,10 @@ export function Logo() {
   );
 }
 
-export function SiteHeader({ current }: { current: 'inicio' | 'laboratorio' | 'documentacion' }) {
+export function SiteHeader({ current, tone }: { current: 'inicio' | 'laboratorio' | 'documentacion'; tone?: 'dark' }) {
   const [open, setOpen] = useState(false);
   return (
-    <header className="site-header">
+    <header className={`site-header ${tone === 'dark' ? 'site-header--dark' : ''}`}>
       <a className="skip" href="#contenido">Saltar al contenido</a>
       <a className="brand" href="/" aria-label="Uvillas, inicio">
         <Logo />
