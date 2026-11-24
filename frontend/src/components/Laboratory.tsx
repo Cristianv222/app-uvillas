@@ -5,6 +5,7 @@ import { CONTROL, DISEASES, type Answer, type Part } from '../expert/knowledgeBa
 import { prepareImage } from '../lib/image';
 import { CameraCapture, canUseCamera } from './CameraCapture';
 import { FruitArt, LeafArt, StemArt } from './Illustrations';
+import { ServerBar } from './ServerBar';
 
 type Prediction = { code: string; name: string; confidence: number; is_healthy: boolean };
 type Result = { part: Part; best: Prediction; predictions: Prediction[] };
@@ -151,6 +152,7 @@ export function Laboratory() {
         </ol>
       </header>
 
+      <ServerBar />
       {error && <p role="alert" className="lab2-error">{error}</p>}
 
       {/* 1 · Parte */}

@@ -285,6 +285,28 @@ cd frontend && npm ci && npm run dev    # desarrollo con recarga (proxy /api →
 npm test && npm run build               # pruebas del motor de reglas y compilación
 ```
 
+### APK de Android
+
+GitHub Actions compila dos APK (`.github/workflows/android-apk.yml`) cada vez que se suben cambios de
+`frontend/`, `mobile/` o `ml-models/` a `main`, o a mano desde **Actions → APK de Android → Run workflow**.
+Al terminar, las APK se descargan en la sección **Artifacts** de la ejecución:
+
+- `uvillas-laboratorio.apk`: la web con el sistema experto, empaquetada con Capacitor (`frontend/android`).
+  Se conecta al puerto **8080** de la PC (nginx).
+- `uvillas-movil.apk`: la app React Native/Expo (solo arm64). Se conecta al puerto **8000** (backend).
+
+Para usarlas en una demostración, el teléfono y la PC con Docker deben estar en el mismo Wi-Fi:
+
+1. Averigua la IP de la PC (`ipconfig` en Windows, línea «Dirección IPv4»).
+2. Para la app móvil, agrega esa IP a `DJANGO_ALLOWED_HOSTS` en `.env` (por ejemplo
+   `DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,10.0.2.2,192.168.1.10`) y reinicia con `docker compose up -d`.
+3. Si Windows pregunta, permite a Docker en redes privadas (puertos 8000 y 8080).
+4. En la app, escribe la IP en **Dirección del servidor** (laboratorio) o en **Servidor** (inicio de sesión
+   o Ajustes de la app móvil) y pulsa **Guardar y probar**.
+
+Para instalarlas, abre el archivo en el teléfono y acepta **Instalar apps de origen desconocido**. Las APK
+están firmadas con la clave de depuración: sirven para pruebas y demostraciones, no para Google Play.
+
 ### Instalar en Android
 
 La web es una PWA (`public/manifest.webmanifest`, `public/sw.js`): en Chrome para Android aparece

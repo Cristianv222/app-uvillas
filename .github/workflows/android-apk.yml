@@ -1,0 +1,95 @@
+# Compila las dos APK de Android en GitHub (no hace falta instalar Android Studio):
+#   - uvillas-laboratorio.apk : la web con el sistema experto (Capacitor)
+#   - uvillas-movil.apk       : la app React Native/Expo
+# Se ejecuta al subir cambios de frontend/ o mobile/ a main, o a mano desde la pestaña Actions.
+# Las APK quedan en el resumen de la ejecución, en "Artifacts".
+name: APK de Android
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - 'mobile/**'
+      - 'ml-models/**'
+      - '.github/workflows/android-apk.yml'
+
+concurrency:
+  group: android-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  laboratorio:
+    name: APK del laboratorio web
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npx cap sync android
+      - name: Compilar APK
+        working-directory: frontend/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/app-debug.apk ../uvillas-laboratorio.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uvillas-laboratorio
+          path: frontend/uvillas-laboratorio.apk
+          if-no-files-found: error
+
+  movil:
+    name: APK de la app móvil
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    defaults:
+      run:
+        working-directory: mobile
+    env:
+      # Dirección inicial del servidor; se cambia dentro de la app (inicio de sesión o Ajustes).
+      EXPO_PUBLIC_API_URL: http://192.168.1.10:8000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npx expo prebuild --platform android --no-install
+        env:
+          CI: 1
+      - name: Compilar APK (arm64, firmada con la clave de depuración)
+        working-directory: mobile/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a -Dorg.gradle.jvmargs=-Xmx4g
+          cp app/build/outputs/apk/release/app-release.apk ../uvillas-movil.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uvillas-movil
+          path: mobile/uvillas-movil.apk
+          if-no-files-found: error

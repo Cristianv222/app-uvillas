@@ -1,6 +1,6 @@
 import * as FileSystem from 'expo-file-system/legacy';
 
-import { API_URL } from '@/core/config/env';
+import { getApiUrl } from '@/core/config/server';
 import { ApiError, NetworkError } from '@/core/errors';
 import { secureStorage, type Tokens } from '@/core/storage/secureStore';
 
@@ -21,7 +21,7 @@ function decodeExp(token: string): number {
 
 async function rawFetch(path: string, init: RequestInit): Promise<Response> {
   try {
-    return await fetch(`${API_URL}${path}`, init);
+    return await fetch(`${getApiUrl()}${path}`, init);
   } catch {
     throw new NetworkError();
   }
@@ -120,7 +120,7 @@ export async function uploadFile(path: string, fileUri: string, field = 'image')
   const token = await getValidAccessToken();
   if (!token) throw new ApiError(401, 'not_authenticated', 'Inicia sesión para continuar.');
   try {
-    const res = await FileSystem.uploadAsync(`${API_URL}${path}`, fileUri, {
+    const res = await FileSystem.uploadAsync(`${getApiUrl()}${path}`, fileUri, {
       httpMethod: 'POST',
       uploadType: FileSystem.FileSystemUploadType.MULTIPART,
       fieldName: field,

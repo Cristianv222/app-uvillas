@@ -1,4 +1,4 @@
-import { WS_URL } from '@/core/config/env';
+import { getWsUrl } from '@/core/config/server';
 import { getValidAccessToken } from '@/core/http/client';
 import type { Part, Prediction } from '@/ml/types';
 
@@ -42,7 +42,7 @@ export class RecognitionSocket {
     this.h.onStatus('connecting');
     const token = await getValidAccessToken().catch(() => null);
     if (!token) return this.scheduleRetry();
-    const ws = new WebSocket(`${WS_URL}/ws/recognition/?token=${encodeURIComponent(token)}&part=${this.part}`);
+    const ws = new WebSocket(`${getWsUrl()}/ws/recognition/?token=${encodeURIComponent(token)}&part=${this.part}`);
     this.ws = ws;
     ws.onopen = () => {
       this.retry = 0;

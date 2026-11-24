@@ -632,6 +632,20 @@ body:has(.lab-night), body:has(.landing) { background: #040805; }
 .shutter:active span { transform: scale(.88); }
 .shutter:disabled { opacity: .4; cursor: not-allowed; }
 
+/* Servidor (solo en la app de Android) */
+.server-bar { margin-bottom: 18px; padding: 12px 16px; border-radius: 14px; border: 1px solid var(--glass-line); background: rgba(231, 243, 220, 0.04); font-size: 0.9375rem; color: var(--mist); }
+.server-bar.open { padding: 18px; border-color: rgba(240, 149, 47, 0.45); }
+.server-bar p { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.server-bar strong { color: #fff; }
+.server-bar p button { margin-left: auto; background: none; border: 0; color: var(--amber); font: 600 0.9375rem var(--font); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.srv-dot { flex-shrink: 0; width: 9px; height: 9px; border-radius: 50%; background: #7fb069; }
+.srv-dot.off { background: #e06a52; }
+.server-bar label { display: grid; gap: 4px; margin-bottom: 12px; }
+.server-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.server-row input { flex: 1 1 200px; min-height: 46px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(231, 243, 220, 0.25); background: rgba(0, 0, 0, 0.3); color: #fff; font: 500 1rem var(--font); }
+.server-row input:focus { outline: 3px solid var(--amber); outline-offset: 1px; }
+.server-error { margin-top: 10px; color: #ffc9bd; }
+
 /* Sesión */
 .session { margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--glass-line); }
 .session h2 { font-size: var(--step-1); color: #fff; margin-bottom: 10px; }

@@ -3,9 +3,9 @@ import React from 'react';
 import { Text, View } from 'react-native';
 
 import { useAuth } from '@/core/auth/AuthContext';
-import { API_URL } from '@/core/config/env';
 import { useIsOnline } from '@/core/network/NetworkProvider';
 import { settingsStore, useSettings } from '@/core/storage/settingsStore';
+import { ServerField } from '@/features/settings/presentation/components/ServerField';
 import { useSync } from '@/features/sync/presentation/SyncProvider';
 import { formatDateTime } from '@/shared/utils/format';
 import { Badge, Button, Card, Chip, Screen, SectionTitle } from '@/ui/components';
@@ -49,7 +49,11 @@ export function SettingsScreen() {
         {lastSyncAt ? <Text className="text-sm text-ink-500">Última: {formatDateTime(lastSyncAt.toISOString())}</Text> : null}
         {error ? <Text className="text-sm text-danger-600">{error}</Text> : null}
         <Button label="Sincronizar ahora" icon={RefreshCw} variant="secondary" onPress={sync} loading={status === 'syncing'} disabled={!online} />
-        <Text className="text-xs text-ink-300">Servidor: {API_URL}</Text>
+      </Card>
+
+      <Card className="gap-3">
+        <SectionTitle>Servidor</SectionTitle>
+        <ServerField />
       </Card>
 
       <Button label="Mis fincas y lotes" icon={Layers} variant="secondary" onPress={() => nav.navigate('Farms')} />

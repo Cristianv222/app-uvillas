@@ -5,6 +5,8 @@ import { Text, View } from 'react-native';
 import { useAuth } from '@/core/auth/AuthContext';
 import { errorMessage } from '@/core/errors';
 import { useIsOnline } from '@/core/network/NetworkProvider';
+import { useSettings } from '@/core/storage/settingsStore';
+import { ServerField } from '@/features/settings/presentation/components/ServerField';
 import { Button, Input, Screen } from '@/ui/components';
 import { Eye, EyeOff, Sprout } from '@/ui/icons';
 import { Pressable } from 'react-native';
@@ -18,6 +20,8 @@ export function LoginScreen() {
   const [show, setShow] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; form?: string }>({});
   const [loading, setLoading] = useState(false);
+  const [showServer, setShowServer] = useState(false);
+  const { apiUrl } = useSettings();
 
   const validate = () => {
     const e: typeof errors = {};
@@ -62,6 +66,10 @@ export function LoginScreen() {
       {errors.form ? <Text className="text-sm text-danger-600">{errors.form}</Text> : null}
       <Button label="Iniciar sesión" onPress={submit} loading={loading} />
       <Button label="Crear una cuenta" variant="ghost" onPress={() => nav.navigate('Register')} />
+      <Pressable onPress={() => setShowServer((s) => !s)} hitSlop={8} accessibilityRole="button">
+        <Text className="text-center text-sm text-ink-500">Servidor: {apiUrl} · {showServer ? 'Ocultar' : 'Cambiar'}</Text>
+      </Pressable>
+      {showServer ? <ServerField /> : null}
     </Screen>
   );
 }

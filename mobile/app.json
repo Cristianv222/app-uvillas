@@ -10,7 +10,11 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.uvillas.app",
-      "infoPlist": { "NSAppTransportSecurity": { "NSAllowsLocalNetworking": true } }
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsLocalNetworking": true
+        }
+      }
     },
     "android": {
       "package": "com.uvillas.app",
@@ -20,15 +24,33 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "usesCleartextTraffic": true,
       "predictiveBackGestureEnabled": false
     },
     "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
       "expo-secure-store",
       "expo-sqlite",
       "expo-splash-screen",
-      ["expo-camera", { "cameraPermission": "Uvillas usa la cámara para diagnosticar hojas, tallos y frutos.", "recordAudioAndroid": false }],
-      ["expo-location", { "locationWhenInUsePermission": "Uvillas guarda la ubicación de cada diagnóstico (opcional)." }],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Uvillas usa la cámara para diagnosticar hojas, tallos y frutos.",
+          "recordAudioAndroid": false
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Uvillas guarda la ubicación de cada diagnóstico (opcional)."
+        }
+      ],
       "react-native-fast-tflite"
     ]
   }
