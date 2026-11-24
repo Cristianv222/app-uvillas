@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16-alpine
+    env_file: .env
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      retries: 10
+  redis:
+    image: redis:7-alpine
+  backend:
+    build: ./backend
+    env_file: .env
+    environment:
+      ML_MODELS_DIR: /app/ml-models
+    volumes:
+      - ./backend:/app
+      - ./ml-models:/app/ml-models:ro
+      - media:/app/media
+    ports: ["8000:8000"]
+    depends_on:
+      db: {condition: service_healthy}
+      redis: {condition: service_started}
+volumes:
+  pgdata:
+  media:

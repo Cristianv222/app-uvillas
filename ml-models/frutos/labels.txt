@@ -1,0 +1,7 @@
+0 F.Pudricion Dura
+1 F.Muerte Descendente
+2 F.Moho Blanco
+3 F.Mancha Gris
+4 F.Mancha Grasienta
+5 F.Fruto Sano
+6 F.Escleroteniosis

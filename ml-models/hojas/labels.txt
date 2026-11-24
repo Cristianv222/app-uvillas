@@ -1,0 +1,8 @@
+0 H_Pudricion_Dura
+1 H_Muerte_Descendente
+2 H_Moho_Blanco
+3 H_Marchitez_Bacterial
+4 H_Mancha_Gris
+5 H_Mancha_Grasienta
+6 H_Hoja_Sana
+7 H_Esclerotiniosis

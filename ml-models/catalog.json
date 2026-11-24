@@ -1,0 +1,357 @@
+[
+  {
+    "part": "frutos",
+    "code": "pudricion_dura",
+    "index": 0,
+    "is_healthy": false,
+    "name": "Pudrición dura",
+    "severity": "high",
+    "description": "Podredumbre de consistencia firme que avanza desde el punto de infección y deja el tejido endurecido y oscuro.",
+    "symptoms": [
+      "Tejido oscuro y de consistencia firme",
+      "Zonas hundidas o resecas",
+      "Avance progresivo desde el punto de infección"
+    ],
+    "treatment": [
+      "Retirar y destruir el material afectado",
+      "Mejorar la ventilación y evitar exceso de humedad",
+      "Consultar a un técnico antes de aplicar fungicidas"
+    ]
+  },
+  {
+    "part": "frutos",
+    "code": "muerte_descendente",
+    "index": 1,
+    "is_healthy": false,
+    "name": "Muerte descendente",
+    "severity": "high",
+    "description": "Secamiento progresivo que avanza desde la punta hacia la base de la planta.",
+    "symptoms": [
+      "Secamiento que inicia en puntas o ramas jóvenes",
+      "Avance hacia la base",
+      "Tejido marchito o necrosado"
+    ],
+    "treatment": [
+      "Podar por debajo de la zona afectada con herramienta desinfectada",
+      "Eliminar los restos fuera del lote",
+      "Consultar a un técnico para el manejo químico"
+    ]
+  },
+  {
+    "part": "frutos",
+    "code": "moho_blanco",
+    "index": 2,
+    "is_healthy": false,
+    "name": "Moho blanco",
+    "severity": "medium",
+    "description": "Crecimiento de micelio blanco con aspecto algodonoso sobre el tejido afectado, favorecido por alta humedad.",
+    "symptoms": [
+      "Capa blanca algodonosa",
+      "Tejido blando o decolorado bajo el moho",
+      "Mayor frecuencia en ambientes húmedos y poco ventilados"
+    ],
+    "treatment": [
+      "Retirar las partes con moho y no dejarlas en el lote",
+      "Reducir la humedad y aumentar la aireación",
+      "Consultar a un técnico sobre fungicidas"
+    ]
+  },
+  {
+    "part": "frutos",
+    "code": "mancha_gris",
+    "index": 3,
+    "is_healthy": false,
+    "name": "Mancha gris",
+    "severity": "medium",
+    "description": "Manchas de color gris sobre el tejido que pueden unirse y cubrir áreas mayores.",
+    "symptoms": [
+      "Manchas grisáceas definidas",
+      "Tejido que se seca alrededor de la mancha",
+      "Aumento de manchas con humedad"
+    ],
+    "treatment": [
+      "Retirar el tejido afectado",
+      "Evitar el riego por aspersión sobre el follaje",
+      "Consultar a un técnico para el control"
+    ]
+  },
+  {
+    "part": "frutos",
+    "code": "mancha_grasienta",
+    "index": 4,
+    "is_healthy": false,
+    "name": "Mancha grasienta",
+    "severity": "medium",
+    "description": "Manchas de aspecto aceitoso o grasoso que luego pueden oscurecerse y secarse.",
+    "symptoms": [
+      "Manchas de apariencia aceitosa",
+      "Oscurecimiento posterior del centro",
+      "Amarillamiento alrededor"
+    ],
+    "treatment": [
+      "Retirar y destruir el material afectado",
+      "Evitar el exceso de humedad en el follaje",
+      "Consultar a un técnico para el control"
+    ]
+  },
+  {
+    "part": "frutos",
+    "code": "fruto_sano",
+    "index": 5,
+    "is_healthy": true,
+    "name": "Sano",
+    "severity": "none",
+    "description": "No se detectan signos de enfermedad en esta parte de la planta.",
+    "symptoms": [
+      "Tejido de color y textura normales",
+      "Sin manchas, mohos ni pudriciones"
+    ],
+    "treatment": [
+      "Mantener las prácticas de manejo actuales",
+      "Seguir monitoreando periódicamente"
+    ]
+  },
+  {
+    "part": "frutos",
+    "code": "escleroteniosis",
+    "index": 6,
+    "is_healthy": false,
+    "name": "Esclerotiniosis",
+    "severity": "high",
+    "description": "Enfermedad causada por hongos que forman esclerocios, estructuras negras y duras que sobreviven en el suelo.",
+    "symptoms": [
+      "Podredumbre blanda o acuosa del tejido",
+      "Micelio blanco y esclerocios negros y duros",
+      "Marchitez de la parte afectada"
+    ],
+    "treatment": [
+      "Retirar y destruir el material con esclerocios",
+      "Rotar cultivos y mejorar el drenaje",
+      "Consultar a un técnico para el control"
+    ]
+  },
+  {
+    "part": "tallos",
+    "code": "sano",
+    "index": 0,
+    "is_healthy": true,
+    "name": "Sano",
+    "severity": "none",
+    "description": "No se detectan signos de enfermedad en esta parte de la planta.",
+    "symptoms": [
+      "Tejido de color y textura normales",
+      "Sin manchas, mohos ni pudriciones"
+    ],
+    "treatment": [
+      "Mantener las prácticas de manejo actuales",
+      "Seguir monitoreando periódicamente"
+    ]
+  },
+  {
+    "part": "tallos",
+    "code": "dura",
+    "index": 1,
+    "is_healthy": false,
+    "name": "Pudrición dura",
+    "severity": "high",
+    "description": "Podredumbre de consistencia firme que avanza desde el punto de infección y deja el tejido endurecido y oscuro.",
+    "symptoms": [
+      "Tejido oscuro y de consistencia firme",
+      "Zonas hundidas o resecas",
+      "Avance progresivo desde el punto de infección"
+    ],
+    "treatment": [
+      "Retirar y destruir el material afectado",
+      "Mejorar la ventilación y evitar exceso de humedad",
+      "Consultar a un técnico antes de aplicar fungicidas"
+    ]
+  },
+  {
+    "part": "tallos",
+    "code": "blanco",
+    "index": 2,
+    "is_healthy": false,
+    "name": "Moho blanco",
+    "severity": "medium",
+    "description": "Crecimiento de micelio blanco con aspecto algodonoso sobre el tejido afectado, favorecido por alta humedad.",
+    "symptoms": [
+      "Capa blanca algodonosa",
+      "Tejido blando o decolorado bajo el moho",
+      "Mayor frecuencia en ambientes húmedos y poco ventilados"
+    ],
+    "treatment": [
+      "Retirar las partes con moho y no dejarlas en el lote",
+      "Reducir la humedad y aumentar la aireación",
+      "Consultar a un técnico sobre fungicidas"
+    ]
+  },
+  {
+    "part": "tallos",
+    "code": "esclerotiniosis",
+    "index": 3,
+    "is_healthy": false,
+    "name": "Esclerotiniosis",
+    "severity": "high",
+    "description": "Enfermedad causada por hongos que forman esclerocios, estructuras negras y duras que sobreviven en el suelo.",
+    "symptoms": [
+      "Podredumbre blanda o acuosa del tejido",
+      "Micelio blanco y esclerocios negros y duros",
+      "Marchitez de la parte afectada"
+    ],
+    "treatment": [
+      "Retirar y destruir el material con esclerocios",
+      "Rotar cultivos y mejorar el drenaje",
+      "Consultar a un técnico para el control"
+    ]
+  },
+  {
+    "part": "hojas",
+    "code": "pudricion_dura",
+    "index": 0,
+    "is_healthy": false,
+    "name": "Pudrición dura",
+    "severity": "high",
+    "description": "Podredumbre de consistencia firme que avanza desde el punto de infección y deja el tejido endurecido y oscuro.",
+    "symptoms": [
+      "Tejido oscuro y de consistencia firme",
+      "Zonas hundidas o resecas",
+      "Avance progresivo desde el punto de infección"
+    ],
+    "treatment": [
+      "Retirar y destruir el material afectado",
+      "Mejorar la ventilación y evitar exceso de humedad",
+      "Consultar a un técnico antes de aplicar fungicidas"
+    ]
+  },
+  {
+    "part": "hojas",
+    "code": "muerte_descendente",
+    "index": 1,
+    "is_healthy": false,
+    "name": "Muerte descendente",
+    "severity": "high",
+    "description": "Secamiento progresivo que avanza desde la punta hacia la base de la planta.",
+    "symptoms": [
+      "Secamiento que inicia en puntas o ramas jóvenes",
+      "Avance hacia la base",
+      "Tejido marchito o necrosado"
+    ],
+    "treatment": [
+      "Podar por debajo de la zona afectada con herramienta desinfectada",
+      "Eliminar los restos fuera del lote",
+      "Consultar a un técnico para el manejo químico"
+    ]
+  },
+  {
+    "part": "hojas",
+    "code": "moho_blanco",
+    "index": 2,
+    "is_healthy": false,
+    "name": "Moho blanco",
+    "severity": "medium",
+    "description": "Crecimiento de micelio blanco con aspecto algodonoso sobre el tejido afectado, favorecido por alta humedad.",
+    "symptoms": [
+      "Capa blanca algodonosa",
+      "Tejido blando o decolorado bajo el moho",
+      "Mayor frecuencia en ambientes húmedos y poco ventilados"
+    ],
+    "treatment": [
+      "Retirar las partes con moho y no dejarlas en el lote",
+      "Reducir la humedad y aumentar la aireación",
+      "Consultar a un técnico sobre fungicidas"
+    ]
+  },
+  {
+    "part": "hojas",
+    "code": "marchitez_bacterial",
+    "index": 3,
+    "is_healthy": false,
+    "name": "Marchitez bacteriana",
+    "severity": "high",
+    "description": "Marchitamiento de la planta asociado a bacterias, que puede propagarse por agua, suelo y herramientas.",
+    "symptoms": [
+      "Marchitamiento repentino de hojas",
+      "Amarillamiento general",
+      "Avance rápido a plantas vecinas"
+    ],
+    "treatment": [
+      "Aislar y retirar las plantas afectadas",
+      "Desinfectar herramientas entre plantas",
+      "Consultar a un técnico; evitar mover suelo o agua del foco"
+    ]
+  },
+  {
+    "part": "hojas",
+    "code": "mancha_gris",
+    "index": 4,
+    "is_healthy": false,
+    "name": "Mancha gris",
+    "severity": "medium",
+    "description": "Manchas de color gris sobre el tejido que pueden unirse y cubrir áreas mayores.",
+    "symptoms": [
+      "Manchas grisáceas definidas",
+      "Tejido que se seca alrededor de la mancha",
+      "Aumento de manchas con humedad"
+    ],
+    "treatment": [
+      "Retirar el tejido afectado",
+      "Evitar el riego por aspersión sobre el follaje",
+      "Consultar a un técnico para el control"
+    ]
+  },
+  {
+    "part": "hojas",
+    "code": "mancha_grasienta",
+    "index": 5,
+    "is_healthy": false,
+    "name": "Mancha grasienta",
+    "severity": "medium",
+    "description": "Manchas de aspecto aceitoso o grasoso que luego pueden oscurecerse y secarse.",
+    "symptoms": [
+      "Manchas de apariencia aceitosa",
+      "Oscurecimiento posterior del centro",
+      "Amarillamiento alrededor"
+    ],
+    "treatment": [
+      "Retirar y destruir el material afectado",
+      "Evitar el exceso de humedad en el follaje",
+      "Consultar a un técnico para el control"
+    ]
+  },
+  {
+    "part": "hojas",
+    "code": "hoja_sana",
+    "index": 6,
+    "is_healthy": true,
+    "name": "Sano",
+    "severity": "none",
+    "description": "No se detectan signos de enfermedad en esta parte de la planta.",
+    "symptoms": [
+      "Tejido de color y textura normales",
+      "Sin manchas, mohos ni pudriciones"
+    ],
+    "treatment": [
+      "Mantener las prácticas de manejo actuales",
+      "Seguir monitoreando periódicamente"
+    ]
+  },
+  {
+    "part": "hojas",
+    "code": "esclerotiniosis",
+    "index": 7,
+    "is_healthy": false,
+    "name": "Esclerotiniosis",
+    "severity": "high",
+    "description": "Enfermedad causada por hongos que forman esclerocios, estructuras negras y duras que sobreviven en el suelo.",
+    "symptoms": [
+      "Podredumbre blanda o acuosa del tejido",
+      "Micelio blanco y esclerocios negros y duros",
+      "Marchitez de la parte afectada"
+    ],
+    "treatment": [
+      "Retirar y destruir el material con esclerocios",
+      "Rotar cultivos y mejorar el drenaje",
+      "Consultar a un técnico para el control"
+    ]
+  }
+]

@@ -1,0 +1,4 @@
+0 T.Sano
+1 T.Dura
+2 T.Blanco
+3 T.Esclerotiniosis

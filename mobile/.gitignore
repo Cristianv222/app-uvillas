@@ -1,0 +1,10 @@
+node_modules/
+.expo/
+dist/
+ios/
+android/
+.env
+# generados por `npm run sync-models`
+src/ml/models/*.tflite
+src/ml/models/labels.generated.ts
+src/features/catalog/data/catalog.json
