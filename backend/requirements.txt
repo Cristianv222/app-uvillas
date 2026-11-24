@@ -9,3 +9,4 @@ django-cors-headers
 Pillow
 numpy
 ai-edge-litert
+openpyxl>=3.1,<4

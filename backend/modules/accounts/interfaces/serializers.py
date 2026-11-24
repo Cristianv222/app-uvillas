@@ -23,7 +23,7 @@ class UpdateUserRoleSerializer(serializers.ModelSerializer):
 
 class RegisterSerializer(serializers.Serializer):
     email = serializers.CharField()
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, style={"input_type": "password"})
     full_name = serializers.CharField(required=False, allow_blank=True, default="")
 
 

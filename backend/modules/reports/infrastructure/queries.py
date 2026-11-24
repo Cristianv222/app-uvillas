@@ -21,6 +21,11 @@ def _base(user, farm=None, plot=None, date_from=None, date_to=None, target_user=
 
 
 class DjangoReportQueries:
+    def diagnostics(self, user, **filters):
+        return (_base(user, **filters).order_by("-captured_at", "id")
+                .values("captured_at", "part", "label_name", "label_code", "confidence", "is_healthy",
+                        "latitude", "longitude", "notes", "farm__name", "plot__name").iterator())
+
     def totals(self, user, **f):
         agg = _base(user, **f).aggregate(total=Count("id"), healthy=Count("id", filter=Q(is_healthy=True)))
         return agg["total"], agg["healthy"]

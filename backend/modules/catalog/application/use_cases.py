@@ -1,11 +1,18 @@
 import json
 from pathlib import Path
 
-from shared.domain.errors import NotFoundError
+from shared.domain.errors import NotFoundError, ValidationError
 from shared.domain.parts import Part
 
 from ..domain.entities import DiseaseInfo
 from ..domain.repositories import DiseaseRepository
+
+
+def _catalog_part(part):
+    try:
+        return Part.parse(part).value
+    except ValidationError as exc:
+        raise NotFoundError("Parte no encontrada.") from exc
 
 
 class ListDiseases:
@@ -13,7 +20,7 @@ class ListDiseases:
         self._repo = repo
 
     def execute(self, part: str | None = None) -> list[DiseaseInfo]:
-        return self._repo.find_all(Part.parse(part).value if part else None)
+        return self._repo.find_all(_catalog_part(part) if part else None)
 
 
 class GetDisease:
@@ -21,7 +28,7 @@ class GetDisease:
         self._repo = repo
 
     def execute(self, part: str, code: str) -> DiseaseInfo:
-        disease = self._repo.get(Part.parse(part).value, code)
+        disease = self._repo.get(_catalog_part(part), code)
         if disease is None:
             raise NotFoundError("Enfermedad no encontrada.")
         return disease

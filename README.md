@@ -206,11 +206,13 @@ Cámara · Historial (y detalle) · Enfermedades (y detalle, con descargo de "co
 | `WS /ws/recognition/?token=<access>&part=hojas` | Tiempo real |
 | `POST /api/sync/push/` · `GET /api/sync/pull/?since=` | Sincronización offline |
 | `GET /api/reports/summary/` | Reportes |
+| `GET /api/reports/export/` | CSV de diagnósticos con JWT, una fila por registro activo. Admite `date_from`, `date_to`, `farm` y `plot`. El administrador puede exportar todos los usuarios o filtrar por `user` (UUID). |
+| `GET /api/reports/export/csv/` · `GET /api/reports/export/xlsx/` | Descarga el resumen del usuario con JWT. Ambos formatos admiten los filtros `farm`, `plot`, `date_from` y `date_to` e incluyen totales, desglose por parte, enfermedades y evolución diaria. |
 | `GET /api/health/` | Estado del servidor |
 
 ## Pruebas
 
-21 pruebas del backend (todas pasan), que usan los modelos TFLite reales:
+La suite del backend incluye pruebas unitarias, de API y de inferencia con los modelos TFLite reales.
 
 | Archivo | Qué cubren |
 |---|---|
@@ -219,6 +221,9 @@ Cámara · Historial (y detalle) · Enfermedades (y detalle, con descargo de "co
 | `scans/tests/test_scans.py` | Validación de `ScanDraft`, flujo finca → lote → diagnóstico con UUID del cliente → listar/filtrar/eliminar, y catálogo sembrado (19 fichas) |
 | `recognition/tests/test_recognition.py` | Los 3 modelos existen con 8/4/7 clases; cada uno devuelve probabilidades que suman 1; entradas inválidas; endpoint HTTP; WebSocket rechaza sin token y hace ida y vuelta con un fotograma |
 | `sync/tests/test_sync.py` | Regla de conflicto, push/pull, el más viejo pierde y el más nuevo gana, pull incremental, borrados, no tocar datos de otro usuario, registros inválidos |
+| `farms/tests/test_farms.py` | Validación de nombres y áreas, propiedad de fincas, creación de lotes y borrado lógico en cascada |
+| `catalog/tests/test_catalog.py` | Listado, filtros, detalle, validación e importación repetida del catálogo |
+| `reports/tests/test_exports.py` | Descarga CSV y XLSX, filtros, aislamiento por usuario, reporte vacío y tipos de celda |
 | `reports/tests/test_reports.py` | Métrica, resumen y filtro de fecha inválido |
 
 El móvil se verificó con `npm run typecheck` y empaquetando con Metro (`expo export`); **no tiene pruebas automáticas ni se ha ejecutado aún en un teléfono o simulador**.

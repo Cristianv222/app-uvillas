@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.http import JsonResponse
 from django.urls import include, path
 
@@ -21,3 +22,6 @@ urlpatterns = [
     path("api/sync/", include("modules.sync.interfaces.urls")),
     path("api/reports/", include("modules.reports.interfaces.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Daphne necesita rutas de archivos estaticos durante el desarrollo.
+urlpatterns += staticfiles_urlpatterns()

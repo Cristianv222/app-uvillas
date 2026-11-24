@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import status
-from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -15,12 +15,13 @@ from .permissions import IsAdminRole
 from .serializers import LoginSerializer, RegisterSerializer, UpdateUserRoleSerializer, UserSerializer
 
 
-class RegisterView(APIView):
+class RegisterView(GenericAPIView):
+    serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
     authentication_classes: list = []
 
     def post(self, request):
-        data = RegisterSerializer(data=request.data)
+        data = self.get_serializer(data=request.data)
         data.is_valid(raise_exception=True)
         entity = RegisterUser(DjangoUserRepository()).execute(**data.validated_data)
         user = get_user_model().objects.get(id=entity.id)
