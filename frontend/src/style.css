@@ -1057,6 +1057,103 @@ nav:not(.saltmere-nav-pill) > a:hover { color: var(--leaf); }
 .lab-history article:last-child { border-bottom: none; }
 .lab-history strong { font-weight: 700; overflow-wrap: anywhere; }
 
+/* Sistema experto */
+.button-ghost {
+  background: transparent;
+  color: var(--leaf);
+  border: 1.5px solid color-mix(in srgb, var(--leaf) 30%, transparent);
+  box-shadow: none;
+  margin: 0 12px 12px 0;
+}
+.button-ghost:hover { background: var(--leaf-pale); }
+
+.control-note {
+  margin: 20px 0;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  border-left: 4px solid var(--leaf-mid);
+  background: var(--leaf-pale);
+}
+.lab .control-note--retake { border-color: var(--warning); background: color-mix(in srgb, var(--warning) 12%, #fff); color: var(--leaf); }
+.lab .control-note--healthy { border-color: var(--ok); color: var(--leaf); }
+.lab .control-note--sick { border-color: var(--uvilla); background: var(--uvilla-pale); color: var(--leaf); }
+
+.expert {
+  margin-top: 32px;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--leaf) 10%, transparent);
+  box-shadow: 0 16px 50px color-mix(in srgb, var(--leaf) 10%, transparent);
+  padding: 44px 40px;
+}
+.expert .eyebrow { color: var(--leaf-mid); margin-bottom: 12px; }
+.expert > p:not(.eyebrow) { max-width: 680px; }
+.expert-form { display: grid; grid-template-columns: 2fr 1fr; gap: 24px 40px; margin-top: 28px; align-items: start; }
+.expert-form > .button { grid-column: 1 / -1; justify-self: start; }
+.expert fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.expert legend { font-weight: 700; font-size: 15px; margin-bottom: 8px; color: var(--leaf); }
+.expert legend small { font-weight: 400; color: var(--muted); }
+.expert-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--leaf) 8%, transparent);
+}
+.lab .expert-question p { color: var(--leaf); font-size: 15px; line-height: 1.5; }
+.expert-question small { color: var(--muted); }
+.answer-group { display: flex; gap: 6px; flex-shrink: 0; }
+.lab .answer-group label {
+  flex-direction: row;
+  margin: 0;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--leaf) 20%, transparent);
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.lab .answer-group label.is-selected { background: var(--leaf); color: #fff; border-color: var(--leaf); }
+.answer-group input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.answer-group label:focus-within { outline: 2px solid var(--uvilla); outline-offset: 2px; }
+.expert-climate { background: var(--leaf-pale); border-radius: var(--radius-md); padding: 20px !important; }
+.lab .expert-climate input { background: #fff; }
+.expert-climate > small { color: var(--muted); font-size: 12px; }
+
+.diagnosis {
+  margin-top: 32px;
+  padding: 28px;
+  border-radius: var(--radius-md);
+  border: 1px solid color-mix(in srgb, var(--leaf) 12%, transparent);
+  border-top: 6px solid var(--muted);
+}
+.diagnosis--probable { border-top-color: var(--uvilla); background: var(--uvilla-pale); }
+.diagnosis--posible { border-top-color: var(--warning); }
+.diagnosis-level { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+.diagnosis h4 { font-family: var(--font-display); font-size: 30px; letter-spacing: -0.03em; margin: 6px 0 4px; }
+.diagnosis-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
+.diagnosis-facts dt { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.diagnosis-facts dd { margin: 4px 0 0; font-size: 14px; line-height: 1.5; }
+.lab .diagnosis-warning { color: var(--uvilla-dark); font-weight: 500; }
+.diagnosis details { margin-top: 16px; }
+.diagnosis summary { cursor: pointer; font-weight: 700; }
+.evidence { list-style: none; padding: 0; margin: 12px 0; display: grid; gap: 8px; }
+.evidence li { display: flex; gap: 12px; align-items: baseline; font-size: 14px; line-height: 1.5; }
+.evidence-cf { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--ok); min-width: 48px; }
+.evidence-cf.is-negative { color: var(--danger); }
+.lab .evidence-formula { font-size: 12px; }
+.diagnosis-others { margin-top: 20px; padding-top: 16px; border-top: 1px solid color-mix(in srgb, var(--leaf) 10%, transparent); }
+.diagnosis-others > p { font-weight: 700; color: var(--leaf); }
+
+@media (max-width: 860px) {
+  .expert { padding: 28px 20px; }
+  .expert-form { grid-template-columns: 1fr; }
+  .expert-question { flex-direction: column; align-items: flex-start; }
+  .diagnosis-facts { grid-template-columns: 1fr; }
+}
+
 /* ══════════════════════════════════════════
    MOTION SURFACE (ThreeUI bg overlay)
 ══════════════════════════════════════════ */

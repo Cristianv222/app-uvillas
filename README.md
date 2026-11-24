@@ -302,3 +302,26 @@ al clasificador, pero no se adjuntan al registro guardado. La sesión JWT perman
 en memoria y se renueva mientras la página está abierta; recargar requiere login.
 Nginx y Vite redirigen `/api/` al backend. El análisis web necesita servidor disponible.
 Créditos de fotografías: `frontend/public/photos/CREDITS.txt`.
+
+### Sistema experto en el laboratorio web
+
+El modelo de imágenes acierta bien si el órgano está sano (80–95 %), pero no distingue
+las enfermedades entre sí (14–31 %). Por eso el laboratorio reparte funciones:
+
+1. **Reglas de control** (`frontend/src/expert/engine.ts`, `assessImage`): R1 pide otra foto
+   si la confianza es menor de 50 %; R2 acepta el órgano sano si su clase supera 60 %;
+   R3 pasa a preguntas si el modelo ve una enfermedad.
+2. **Reglas por síntomas y clima** (`frontend/src/expert/knowledgeBase.ts`): preguntas
+   Sí/No/No sé según el órgano, y temperatura y humedad opcionales.
+3. **Factores de certeza** (`diagnose`): la confianza del modelo, ponderada por su fiabilidad
+   en cada órgano, se combina con las reglas con FC = FC₁ + FC₂ × (1 − FC₁) (MYCIN; las
+   evidencias negativas restan). Resultado: probable (≥ 0,60), posible (≥ 0,35) o indeterminado,
+   con la lista de reglas que se activaron.
+
+Las reglas salen del análisis bibliográfico del informe (Lagos Burbano et al., 2020) y los
+valores de FC son estimaciones del equipo: deben validarse con un agrónomo. El motor no
+depende de React, así que puede portarse al backend o al móvil.
+
+```bash
+cd frontend && npm test   # pruebas del motor de reglas
+```
