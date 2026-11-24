@@ -1,3 +1,4 @@
+import { Asset } from 'expo-asset';
 import { loadTensorflowModel, type TensorflowModel } from 'react-native-fast-tflite';
 
 import { LABELS, MODEL_SOURCES } from '../models';
@@ -5,10 +6,24 @@ import type { Part, Prediction } from '../types';
 
 const loaded = new Map<Part, Promise<TensorflowModel>>();
 
+/**
+ * En la APK de producción el .tflite queda como recurso interno de Android (por ejemplo
+ * "src_ml_models_hojas", sin protocolo) y react-native-fast-tflite falla con
+ * MalformedURLException. expo-asset lo copia a un archivo local (file://) y se carga desde ahí.
+ * En desarrollo funciona igual: descarga el archivo desde Metro.
+ */
+async function modelFile(part: Part): Promise<{ url: string }> {
+  const asset = Asset.fromModule(MODEL_SOURCES[part]);
+  if (!asset.localUri) await asset.downloadAsync();
+  const url = asset.localUri ?? asset.uri;
+  if (!url) throw new Error(`No se encontró el modelo de ${part}.`);
+  return { url };
+}
+
 /** Carga (una sola vez) el modelo TFLite de la parte indicada. Funciona sin internet. */
 export function loadModel(part: Part): Promise<TensorflowModel> {
   if (!loaded.has(part)) {
-    const p = loadTensorflowModel(MODEL_SOURCES[part], []);
+    const p = modelFile(part).then((source) => loadTensorflowModel(source, []));
     p.catch(() => loaded.delete(part));
     loaded.set(part, p);
   }
